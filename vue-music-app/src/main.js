@@ -8,8 +8,7 @@ Vue.config.productionTip = false// ???
 
 // 适配Rem
 var clientWidth  = document.documentElement.clientWidth;
-console.log(clientWidth)
-document.documentElement.style.fontSize = clientWidth / 640 * 100 + 'px';
+document.documentElement.style.fontSize = (clientWidth / 750) * 100 + 'px';
 
 new Vue({
   router,
