@@ -1,20 +1,7 @@
 <template>
   <div id="page">
-    <div class="head">
-
-      <div class="title">
-        <i class="iconfont icon-cebianlan"></i>
-        <p>music</p>
-        <i class="iconfont icon-sousuo"></i>
-      </div>
-      
-      <ul class="action">
-        <li v-for="(item,index) in action" @click="action_atv(index)" :key="index">
-          <span  v-bind:class="{active_Span: index == actionMrka }">{{item}}</span>
-        </li>
-      </ul>
-    </div>
-
+    
+    <heads></heads>
     <div class="recommend">
       <div class="redBg"></div>
       <div class="bannerSty">
@@ -27,7 +14,20 @@
           
         </swiper>
       </div>
-       
+      <h3>推荐歌单</h3>
+        
+        <ul class="recommendMusic">
+          <li v-for="(item,index) in recommendList" :key="index">
+            <div>
+              <img v-bind:src="item.picUrl" alt="">
+              <div class="musicCount">
+                <i class="iconfont icon-erji"></i>
+                <span>&nbsp;&nbsp;{{item.playCount | conversion}}万</span>
+              </div>
+            </div>
+            <p>{{item.name}}</p>
+          </li>
+        </ul>
     </div>
   </div>
 </template>
@@ -38,15 +38,16 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.min.css';
 import axios from 'axios'
 
+import heads from '../common/head'
+
 
 export default {
   name: 'home',// ???
   data(){
     return{
-      action: ['推荐','排行','歌手'],
       actionMrka: 1,
-      banners: [],
-
+      banners: [], //轮播图
+      recommendList: [], //推荐歌单
 
       notNextTick: true,
       swiperOption: {
@@ -65,34 +66,49 @@ export default {
   },
   components: {
     swiper,
-    swiperSlide
+    swiperSlide,
+    heads: heads,
   },
   methods: {
     action_atv(index){ // 点击按钮切换下标
       this.actionMrka = index;
     }
   },
+  filters: {
+      conversion(count){
+        return count.toString().slice(0,2);
+      }
+  },
   computed: {
       swiper() {
         return this.$refs.mySwiper.swiper
-      }
-    },
-    mounted() {
-      // you can use current swiper instance object to do something(swiper methods)
-      // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
-      // console.log('this is current swiper instance object', this.swiper)
-      // this.swiper.slideTo(3, 1000, false)
+      },
+      
+  },
+  mounted() {
+    // you can use current swiper instance object to do something(swiper methods)
+    // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
+    // console.log('this is current swiper instance object', this.swiper)
+    // this.swiper.slideTo(3, 1000, false)
 
-      axios.get('http://localhost:3000/banner')
-      .then((response) => {
-        this.banners = response.data.banners;
-        console.log(this.banners);
-      })
-      .catch((error) => {
-        console.log("错误:"+error);
-      })
+    axios.get('http://localhost:3000/banner')
+    .then((response) => {
+      this.banners = response.data.banners;
+    })
+    .catch((error) => {
+      console.log("错误:"+error);
+    })
 
-    }
+
+    axios.get('http://localhost:3000/personalized')
+    .then((response) => {
+      this.recommendList = response.data.result;
+    })
+    .catch((error) => {
+      console.log("错误:"+error);
+    })
+
+  }
   
   // mounted(): {
   //     var mySwiper = new Swiper('.swiper-container', {})
@@ -106,58 +122,8 @@ export default {
 
   #page{
     width: 7.50rem;
-    color: #f1f1f1;    
-    font-size: 0.3rem;
-    .head{
-      height: 1.6rem;
-      background: #d44538;
-
-      .title{
-        display: flex;
-        justify-content: space-between;
-        padding: 0 .20rem;
-        height: .80rem;
-        line-height: .80rem;
-        font-size: .24rem;
-
-        i{
-          display: inline-block;
-          padding: 0 .10rem;
-          font-size: .35rem;
-        }
-        p{
-          font-size: 0.30rem;
-          letter-spacing: .05rem;
-          font-weight: 700;
-          color: #f1f1f1;
-
-        }
-      }
-
-      .action{
-        display: flex;
-        height: .80rem;
-        line-height: 0.80rem;
-
-        li{
-          flex: 1;
-          text-align: center;
-
-          span{
-            padding: .03rem 0;
-            color: #f1f1f1;
-            font-size: .28rem;
-          }
-
-          .active_Span{
-            border-bottom: .03rem solid #fff;
-            color: #fff;
-            font-weight: bold;
-          }
-        }
-      }
-      
-    }
+    // font-size: 0.3rem;
+    
 
     // 推荐 
     .recommend{
@@ -170,21 +136,68 @@ export default {
       }
       .bannerSty{
         padding: 0 0.15rem;
+        font-size: 0;
+
+        .swiper-container{
+          border-radius: .10rem;
+        }
+
+        img{
+            width: 100%;
+            height: 3.32rem;
+          }
       }
 
+      h3{
+          height: 1.3rem;
+          line-height: 1.3rem;
+          padding: 0 0.15rem;
+          font-size: 0.28rem;
+          color: #262626;
+        }
 
-      .swiper-container {
-          // height: 3.3rem;
+      .recommendMusic{
+        color: #000;
+        padding: 0 .10rem;
+        font-size: 0;
+        overflow: hidden;
 
-          .swiper-wrapper{
-            // height: 3.3rem;
+        li{
+          float: left;
+          width: 2.34rem;
+          height: 3.35rem;
+          padding-right: .14rem;
+
+          > div{
+            position: relative;
+            margin-bottom: 0.15rem;
 
             img{
               width: 100%;
-              height: 3.3rem;
             }
+            .musicCount{
+              position: absolute;
+              top: 0;
+              right: 0;
+              color: #fff;
+              padding: 0.10rem;
+              font-size: 0.22rem;
+
+            }
+          } 
+          p{
+            font-size: .22rem;
+            color: #323233;
+          }
         }
-      }
+        li:nth-child(3n){
+          padding-right: 0; 
+        }
+
+        
+    }
+
+          
       
     }
   }
