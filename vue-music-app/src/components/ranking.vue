@@ -2,15 +2,12 @@
     <div id="ranking">
         <heads></heads>
         <ul>
-            <h1>你好</h1>
             <li v-for="(item,index) in rankingList" :key="index">
                 <div>
-                    <img v-bind:src="rankingPicture[index]" alt="">
+                    <img v-bind:src="item.coverImgUrl" alt="">
                 </div>
                 <div class="musicList">
-                    <p>1.&nbsp;{{item[0].name}}</p>
-                    <p>2.&nbsp;{{item[1].name}}</p>
-                    <p>3.&nbsp;{{item[2].name}}</p>
+                    <p v-for="(song,i) in item.top" :key="i">{{i+1}}.&nbsp;{{song.name}}</p>
                 </div>
             </li>
         </ul>
@@ -28,8 +25,7 @@ export default {
     data(){
         return{
             rankingList: [],//排行歌单
-            rankingPicture: [],//排行图片
-            arr: [111,222,333]
+            MUSIC_TOP: [1,2,3,4,5,6,7,8,9,10]
         }
     },
     components:{
@@ -38,29 +34,25 @@ export default {
     methods:{
         init() {
             let url = 'http://localhost:3000/top/list?idx='
-            for(let i= 0; i< 5; i++){
-                axios.get(url+i)
+            for(let i= 0; i< this.MUSIC_TOP.length; i++){
+                axios.get(url+this.MUSIC_TOP[i])
                 .then((response) => {
-                    this.rankingList[i] = response.data.playlist.tracks;
-                    this.rankingPicture[i] = response.data.playlist.coverImgUrl;
-                    console.log();
+                    // 错误：一开始的写法初衷，请求到的数据，每次都是有序的渲染出来。
+                    // this.rankingList[i] = response.data.playlist.tracks;
+                    let list = response.data.playlist;
+                    list.top = response.data.playlist.tracks.slice(0, 3)
+                    this.rankingList.push(list);
                 })
                 .catch((error) => {
                     console.log("错误:"+error);
                 })
             }
+            
 
-            console.log(this.rankingList);
-            console.log(this.rankingPicture);
         }
     },
-    mounted(){
-        
+    created(){
         this.init();
-
-        
-        
-        
     }
 }
 </script>
