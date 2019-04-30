@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../components/home.vue'
 import Ranking from '../components/ranking.vue'
+import Singer from '../components/singer.vue'
+
 
 
 
@@ -20,6 +22,11 @@ export default new Router({
       path: '/ranking',
       name: 'ranking',
       component: Ranking
+    },
+    {
+      path: '/singer',
+      name: 'singer',
+      component: Singer
     },
   ]
 })

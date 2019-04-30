@@ -2,9 +2,9 @@
     <div id="ranking">
         <heads></heads>
         <ul>
-            <li v-for="(item,index) in rankingList" :key="index">
+            <li  v-for="(item,index) in rankingList" :key="index">
                 <div>
-                    <img v-bind:src="item.coverImgUrl" alt="">
+                    <img  v-bind:src="item.coverImgUrl" alt="">
                 </div>
                 <div class="musicList">
                     <p v-for="(song,i) in item.top" :key="i">{{i+1}}.&nbsp;{{song.name}}</p>
@@ -39,15 +39,21 @@ export default {
                 .then((response) => {
                     // 错误：一开始的写法初衷，请求到的数据，每次都是有序的渲染出来。
                     // this.rankingList[i] = response.data.playlist.tracks;
+
+
                     let list = response.data.playlist;
                     list.top = response.data.playlist.tracks.slice(0, 3)
                     this.rankingList.push(list);
+
+                    //待解决：这样用会报 rankingList数组下的属性undefined
+                    // this.$set(this.rankingList,i,list)
+
                 })
                 .catch((error) => {
                     console.log("错误:"+error);
                 })
             }
-            
+            console.log(this.rankingList);
 
         }
     },
@@ -62,10 +68,12 @@ export default {
 
         ul{
             padding: 0.10rem 0.16rem;
+            height: calc(13.34rem - 1.6rem - 0.20rem); 
+            overflow: scroll;
 
             li{
                 display: flex;
-                padding: 0.05rem 0;
+                padding: 0.08rem 0;
                 border-bottom: 0.02rem solid #ccc; 
                 font-size: 0;
             }
@@ -84,6 +92,7 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     width: 4rem;
+                    color: #2e3030,
                 }
             }
         }
