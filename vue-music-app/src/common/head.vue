@@ -7,9 +7,9 @@
       </div>
       
       <ul class="action">
-        <li v-for="(item,index) in action" @click="action_atv(index)" :key="index">
+        <li v-for="(item,index) in action" @click="action_atv(index,item)" :key="index">
           <span  v-bind:class="{active_Span: index == actionMrka }">
-              {{item}}
+              {{index}}
           </span>
         </li>
       </ul>
@@ -17,16 +17,24 @@
 </template>
 
 <script>
+
+
 export default {
     data(){
         return{
-            action: ['推荐','排行','歌手'],
-            actionMrka: 0,
+            action: {
+              '推荐': 'home',
+              '排行': 'ranking',
+              '歌手': 'singer',
+              },
+            actionMrka: '推荐',
         }
     },
     methods: {
-        action_atv(index){ // 点击按钮切换下标
-            this.actionMrka = index;
+        action_atv(index,site){ // 点击按钮切换下标
+          console.log(index);
+          this.actionMrka = index;
+          this.$router.push({ name: site, params: {'actionMrka' : index}})
         }
     },
 }

@@ -5,8 +5,6 @@ import Ranking from '../components/ranking.vue'
 import Singer from '../components/singer.vue'
 
 
-
-
 Vue.use(Router)
 
 export default new Router({
@@ -14,7 +12,7 @@ export default new Router({
   base: process.env.BASE_URL,// ???
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: Home
     },

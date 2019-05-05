@@ -42,6 +42,7 @@ export default {
             .then((response) =>{
                 let artists = response.data.artists;
                 let list = {};
+                let newlist = {};
                 artists.forEach(element => {
                     let pyinStr =  pinyin.getFullChars(element.name).slice(0,1);
                     if(list[pyinStr] === undefined){
@@ -49,9 +50,15 @@ export default {
                     }
                     list[pyinStr].push(element);
                 });
-
-                this.singerList = list;
-                console.log(this.singerList);
+                
+                // 排序对象里的字母属性。(如果一开始就设定ABC...属性,那么就无需调整,直接push进相应的属性里去)
+                let letter = Object.keys(list).sort((a,b) => {
+                    return a.charCodeAt() - b.charCodeAt();
+                })
+                for(let i in letter){
+                    newlist[letter[i]] = list[letter[i]];
+                }
+                this.singerList = newlist;
             })
             .catch((error) => {
                 console.log("错误:"+error);
@@ -72,6 +79,8 @@ export default {
     #singer{
 
         .singer{
+            overflow: scroll;
+            height: calc(13.34rem - 1.60rem);
 
             ul{
                 font-size: 0.20rem;

@@ -53,12 +53,13 @@ export default {
                     console.log("错误:"+error);
                 })
             }
-            console.log(this.rankingList);
-
         }
     },
     created(){
         this.init();
+    },
+    mounted(){
+        console.log("接收值："+this.$route.params.actionMrka);
     }
 }
 </script>
