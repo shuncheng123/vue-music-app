@@ -1,6 +1,6 @@
 <template>
     <div id="singer">
-        <heads></heads>
+        <heads actionMarks="歌手"></heads>
         <div class="singer">
             <ul v-for="(item, index) in singerList" :key="index">
                 <h4>{{index}}</h4>

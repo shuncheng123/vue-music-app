@@ -1,7 +1,8 @@
 <template>
   <div id="page">
     
-    <heads></heads>
+    <heads v-bind:actionMarks="msg"></heads>
+    <input type="text" v-model="msg" name="" id="">
     <div class="recommend">
       <div class="redBg"></div>
       <div class="bannerSty">
@@ -45,6 +46,7 @@ export default {
   name: 'home',// ???
   data(){
     return{
+      msg: '推荐',
       actionMrka: 1,
       banners: [], //轮播图
       recommendList: [], //推荐歌单

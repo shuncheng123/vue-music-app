@@ -8,7 +8,7 @@
       
       <ul class="action">
         <li v-for="(item,index) in action" @click="action_atv(index,item)" :key="index">
-          <span  v-bind:class="{active_Span: index == actionMrka }">
+          <span  v-bind:class="{active_Span: index == actionMarks }">
               {{index}}
           </span>
         </li>
@@ -27,16 +27,24 @@ export default {
               '排行': 'ranking',
               '歌手': 'singer',
               },
-            actionMrka: '推荐',
+            // actionMark: '推荐',
+            // actionMark: this.actionMarks,
+
         }
     },
+    props: ['actionMarks'],
     methods: {
         action_atv(index,site){ // 点击按钮切换下标
-          console.log(index);
-          this.actionMrka = index;
-          this.$router.push({ name: site, params: {'actionMrka' : index}})
+          console.log("点击后获取从父组件传递过来的："+this.actionMarks);
+          this.$router.push({ name: site, params: {'actionMark' : index}})
+        },
+        update_actMrk(status){
+          // this.actionMark = status;
         }
     },
+    mounted(){
+      console.log("初始化："+this.actionMarks);
+    }
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
     <div id="ranking">
-        <heads></heads>
+        <heads actionMarks="排行"></heads>
         <ul>
             <li  v-for="(item,index) in rankingList" :key="index">
                 <div>
@@ -59,7 +59,7 @@ export default {
         this.init();
     },
     mounted(){
-        console.log("接收值："+this.$route.params.actionMrka);
+        // console.log("接收值："+this.$route.params.actionMrka);
     }
 }
 </script>
