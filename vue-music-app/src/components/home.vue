@@ -1,8 +1,7 @@
 <template>
   <div id="page">
     
-    <heads v-bind:actionMarks="msg"></heads>
-    <input type="text" v-model="msg" name="" id="">
+    <heads actionMarks="推荐"></heads>
     <div class="recommend">
       <div class="redBg"></div>
       <div class="bannerSty">
@@ -46,7 +45,6 @@ export default {
   name: 'home',// ???
   data(){
     return{
-      msg: '推荐',
       actionMrka: 1,
       banners: [], //轮播图
       recommendList: [], //推荐歌单
@@ -72,6 +70,25 @@ export default {
     heads: heads,
   },
   methods: {
+    init(){
+      axios.get('http://localhost:3000/banner')
+      .then((response) => {
+        this.banners = response.data.banners;
+      })
+      .catch((error) => {
+        console.log("错误:"+error);
+      })
+
+      axios.get('http://localhost:3000/personalized')
+      .then((response) => {
+        this.recommendList = response.data.result;
+      })
+      .catch((error) => {
+        console.log("错误:"+error);
+      })
+
+      
+    },
     action_atv(index){ // 点击按钮切换下标
       this.actionMrka = index;
     }
@@ -88,27 +105,12 @@ export default {
       
   },
   mounted() {
-    // you can use current swiper instance object to do something(swiper methods)
-    // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
+    
     // console.log('this is current swiper instance object', this.swiper)
     // this.swiper.slideTo(3, 1000, false)
 
-    axios.get('http://localhost:3000/banner')
-    .then((response) => {
-      this.banners = response.data.banners;
-    })
-    .catch((error) => {
-      console.log("错误:"+error);
-    })
-
-
-    axios.get('http://localhost:3000/personalized')
-    .then((response) => {
-      this.recommendList = response.data.result;
-    })
-    .catch((error) => {
-      console.log("错误:"+error);
-    })
+    this.init();
+    
 
   }
   
@@ -129,7 +131,9 @@ export default {
 
     // 推荐 
     .recommend{
-
+      overflow: scroll;
+      height: calc(13.34rem - 1.60rem);
+      position: relative;
       .redBg{
         background: #d44538;
         height: 2.7rem;

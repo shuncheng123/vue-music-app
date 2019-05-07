@@ -27,10 +27,8 @@ import heads from '../common/head'
 export default {
     data(){
         return{
-            singerList:{
-                // 'A':[],
-                // 'B':[]
-            }
+            singerList: {},
+            hotSingerList: [],
         }
     },
     components:{
@@ -38,7 +36,17 @@ export default {
     },
     methods:{
         init(){
-            axios.get('http://localhost:3000/top/artists?limit=100')
+            
+            axios.get('http://localhost:3000/toplist/artist?limit=10')// 热门歌手
+            .then((response) => {
+                let list = response.data.list.artists.slice(0,10);
+                this.hotSingerList = list;
+            })
+            .catch((error) => {
+                console.log("错误:"+error);
+            })
+
+            axios.get('http://localhost:3000/top/artists?limit=100')// 歌手
             .then((response) =>{
                 let artists = response.data.artists;
                 let list = {};

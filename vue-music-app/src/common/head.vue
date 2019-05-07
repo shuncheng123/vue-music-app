@@ -27,16 +27,17 @@ export default {
               '排行': 'ranking',
               '歌手': 'singer',
               },
-            // actionMark: '推荐',
-            // actionMark: this.actionMarks,
-
         }
     },
-    props: ['actionMarks'],
+    props: {
+      actionMarks:{
+          types: String,
+          default: '推荐',
+      }
+    },
     methods: {
-        action_atv(index,site){ // 点击按钮切换下标
-          console.log("点击后获取从父组件传递过来的："+this.actionMarks);
-          this.$router.push({ name: site, params: {'actionMark' : index}})
+        action_atv(index,site){ 
+          this.$router.push({ name: site})
         },
         update_actMrk(status){
           // this.actionMark = status;
