@@ -2,9 +2,9 @@
   <div id="singer">
     <heads actionMarks="歌手"></heads>
     <div class="singerConten">
-      <div ref="bor" class="singer" >
-        <ul v-for="(item, index) in singerArr" :key="index" :data-count="index">
-          <h4>{{ item.index }}</h4>
+      <div ref="singerEl" class="singer" >
+        <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
+          <h4>{{ item.title | titleChange }}</h4>
           <li v-for="(gingerName, i) in item.singer" :key="i">
             <div>
               <img v-bind:src="gingerName.img1v1Url" alt="" />
@@ -15,7 +15,7 @@
       </div>
       <div class="list-shortcut">
         <ul>
-          <li v-for="(item, index) in shortcutList"  :ref="'shortcut'+index" :key="index">{{ item }}</li>
+          <li v-for="(item, index) in shortcutList"  :ref="'shortcut'+index" :key="index">{{ item | letterChange }}</li>
         </ul>
       </div>
     </div>
@@ -32,65 +32,24 @@ import utils from "../api/utils";
 export default {
   data() {
     return {
-      singerList: {},
-      hotSingerList: [],
-      shortcutList: [],
-      moveMark : '',
-      lasts: 0,
-      singerArr: [
-          {
-              index: "A",
-              singer: [
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  },
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  }
-              ]
-          },
-          {
-              index: "A",
-              singer: [
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  },
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  }
-              ]
-          },
-          {
-              index: "A",
-              singer: [
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  },
-                  {
-                      name: '化州',
-                      img1v1Url: 'https://p2.music.126.net/t57DhLvsHGjCsJo46rgowQ==/109951164048587316.jpg'
-                  }
-              ]
-          },
-      ]
+      singerList: [],// 歌手列表
+      shortcutList: [],// 字母列表
     };
+  },
+  mounted() {
+
+    this.init();
+    this.$refs.singerEl.addEventListener('scroll',this.throttle(this.moveSingerList,500));
   },
   components: {
     heads
   },
   methods: {
     init() {
-    this.setDate = new Date().getTime();
       new Promise((resolve, reject) => {
         axios.get("http://localhost:3000/toplist/artist?limit=10") // 热门歌手
           .then(response => {
             let list = response.data.list.artists.slice(0, 10);
-            this.hotSingerList = list;
             resolve(list);
           })
           .catch(error => {
@@ -100,15 +59,15 @@ export default {
         axios.get("http://localhost:3000/top/artists?limit=100") // 歌手
           .then(response => {
 
-            let list = {};
-            let singerArrs = [];
+            let singerArrs = [];// 未排序得歌手总数组
 
-            let newlist = {};
+            let list = {};// 未排序
+            let newlist = {};// 已排序
             
-            let artists = response.data.artists;// 100条歌手
+            // 102条数据
+            let artists = response.data.artists;
             artists = utils.unique(artists.concat(value), "id"); // 数组对象去重
 
-            console.log(artists);
 
             artists.forEach(element => {
               let pyinStr = pinyin.getFullChars(element.name).slice(0, 1);
@@ -116,21 +75,31 @@ export default {
                 list[pyinStr] = [];
               }
               list[pyinStr].push(element);
-                // singerArrs.push(list[pyinStr])
             });
-            console.log(list);
-            // 排序对象里的字母属性。(如果一开始就设定ABC...属性,那么就无需调整,直接push进相应的属性里去)
+
+
+            //排序对象里的字母属性：
             let letter = Object.keys(list).sort((a, b) => {
               return a.charCodeAt() - b.charCodeAt();
             });
 
-            newlist["热门"] = value;
+            //将热榜歌手插入在最前面
+            newlist["re"] = value;
+            //排序：根据字母顺序依次赋值给newlist
             for (let i in letter) {
               newlist[letter[i]] = list[letter[i]];
             }
-            this.singerList = newlist;
+
+            //添加属性：将已排序完成的数据newlist,添加新属性
+            for(let item in newlist){
+              var obj = {};
+              obj['title'] = item;
+              obj['singer'] = newlist[item];
+              singerArrs.push(obj)
+            }
+            this.singerList = singerArrs;
+            
             var shortcutArr = Object.keys(newlist);
-            shortcutArr[0] = '热'
             this.shortcutList = shortcutArr;
           })
           .catch(error => {
@@ -153,24 +122,32 @@ export default {
     },
     
     moveSingerList(){
-        var scrollTop =  this.$refs.bor.scrollTop;
-        var singerEl = this.$refs.bor.children;
-        var headEl = this.$refs.bor.getBoundingClientRect().top;
+        var scrollTop =  this.$refs.singerEl.scrollTop;
+        var singerEl = this.$refs.singerEl.children;
+        var headEl = this.$refs.singerEl.getBoundingClientRect().top;// 头部高度
+        // console.log(headEl);
+
         for(let i = 0; i< singerEl.length; i++){
-            if(singerEl[i].getBoundingClientRect().top < headEl && singerEl[i+1].getBoundingClientRect().top > headEl){
+                // console.log(singerEl[i].getBoundingClientRect().top)
+            if(singerEl[i].getBoundingClientRect().top > 0 && singerEl[i].getBoundingClientRect().top < 100){
                 console.log(singerEl[i])
-                var aaa = singerEl[i].dataset.count;
-                console.log("shortcut"+aaa)
-                this.$ref["shortcut"+aaa].addClass('active');
             }
+            // if(singerEl[i].getBoundingClientRect().top < headEl && singerEl[i+1].getBoundingClientRect().top > headEl){
+            //     var aaa = singerEl[i].dataset.count;
+            //     console.log("shortcut"+aaa)
+            //     this.$ref["shortcut"+aaa].addClass('active');
+            // }
             
         }
     }
   },
-  mounted() {
-
-    this.init();
-    this.$refs.bor.addEventListener('scroll',this.throttle(this.moveSingerList,200));
+  filters: {
+      titleChange(value){
+        return value == 're'? '热门': value;
+      },
+      letterChange(value){
+        return value == 're'? '热': value;
+      }
   }
 };
 </script>
