@@ -2,7 +2,6 @@
   <div id="singer">
     <heads actionMarks="歌手"></heads>
     <div class="singerConten" ref="singerContenEl">
-      <!-- style="transform: translateY(0rem);" -->
       <div class="singer" ref="singerEl"  >
         <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
           <h4>{{ item.title | titleChange }}</h4>
@@ -44,7 +43,7 @@ export default {
     // 错误：singerEl[0] == undefined 下文可以获取
     // var singerEl = this.$refs.singerEl.children;
     // var liElHeight = singerEl[0].lastElementChild.offsetHeight;
-    this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,300));
+    this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,200));
   },
   components: {
     heads
@@ -112,49 +111,31 @@ export default {
           });
       });
     },
-    
+    // 右侧“快捷导航”点击事件
     shortcutAisle(index){
 
-      //根据index下标，获取DIV下对应的UL元素距离顶部的高度H;用H减去头部的高度等于DIV往Y轴挪移的高度；
-      //this.shortcutActive 赋值 index下标；
-      //
-      // this.shortcutActive = index;
       var singerContenEl = this.$refs.singerContenEl;
       var singerEl = this.$refs.singerEl.children;
-      var ulElTop = singerEl[index].getBoundingClientRect().top;
-      console.log(singerEl[3].getBoundingClientRect().top);
+      var ulElTop = singerEl[index].offsetTop;
 
-      console.log("距离顶部的高度："+ulElTop,index);
-      var headHieght = this.$refs.singerContenEl.getBoundingClientRect().top;
-
-      // var ulElHeight = singerEl[index].offsetHeight;
-      // console.log("当前Ul元素的高度："+ulElHeight);
-      console.log(typeof headHieght,headHieght);
-      console.log(typeof ulElTop,ulElTop);
-
-
-      this.$refs.singerEl.style.color = '#000000'
-      // var f = (headHieght-ulElTop)*2/100;
-      // console.log(f);
-      singerContenEl.scrollTo(0, ulElTop-headHieght);
-      // this.$refs.singerEl.style.transform = 'translateY('+f+'rem)';
-
+      singerContenEl.scrollTo(0, ulElTop);
+      console.log(this.$refs.singerContenEl.scrollTop);
+      // 修改：这里存在一个很大的问题,点击字母，滚动条定位到对应位置，同时会触发滚动条事件。随之进入一次没有必要的循环
     },
     
+    // 触发Div滚动事件，
     moveSingerList(){
-        console.log('我进来了');
         var singerEl = this.$refs.singerEl.children;
         var liElHeight = singerEl[0].lastElementChild.offsetHeight;
-        var headEl = this.$refs.singerContenEl.getBoundingClientRect().top + liElHeight;// 头部高度
-
+        var headEl = this.$refs.singerContenEl.offsetTop + liElHeight;// 头部高度
         for(let i = 0; i< singerEl.length; i++){
-            if(singerEl[i].getBoundingClientRect().top < headEl && singerEl[i+1].getBoundingClientRect().top > headEl){
-            // console.log(singerEl[i].getBoundingClientRect().top);
-            // console.log(singerEl[i]);
-              var count = singerEl[i].dataset.count;
-              this.shortcutActive = count;
+            // if(singerEl[i].getBoundingClientRect().top < headEl && singerEl[i+1].getBoundingClientRect().top > headEl){
+            // }
+            if(this.$refs.singerContenEl.scrollTop + liElHeight < singerEl[i].offsetTop + singerEl[i].offsetHeight){
+                var count = singerEl[i].dataset.count;
+                this.shortcutActive = count;
+                return ;
             }
-            
         }
     }
   },
@@ -178,9 +159,7 @@ export default {
     height: calc(13.34rem - 1.6rem);
 
     .singer {
-        // transform: translateY(0rem);
         font-size: 0.2rem;
-        color: red;
 
       ul {
         padding-left: 0.1rem;
