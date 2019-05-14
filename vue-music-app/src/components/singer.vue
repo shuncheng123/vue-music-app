@@ -7,7 +7,7 @@
           <h4>{{ item.title | titleChange }}</h4>
           <li v-for="(gingerName, i) in item.singer" :key="i">
             <div>
-              <img v-bind:src="gingerName.img1v1Url" alt="" />
+              <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
             </div>
             <p>{{ gingerName.name }}</p>
           </li>
@@ -179,6 +179,16 @@ export default {
 
           img {
             width: 0.9rem;
+            background-size: 100%;
+          }
+          
+          img[lazy=loading]{
+                background-image: url('../../public/img/default.png');
+                background-size: 100%;
+            }
+          img[lazy=loaded]{
+              background-image: url('../../public/img/default.png');
+              background-size: 100%;
           }
           p {
             margin-left: 0.35rem;

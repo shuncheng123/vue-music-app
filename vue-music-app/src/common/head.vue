@@ -7,9 +7,10 @@
       </div>
       
       <ul class="action">
-        <li v-for="(item,index) in action" @click="action_atv(index,item)" :key="index">
-          <span  v-bind:class="{active_Span: index == actionMarks }">
-              {{index}}
+        <li v-for="(item,index) in action" @click="action_atv(index,item.site)" :key="index">
+          <!-- <span  v-bind:class="{active_Span: index == actionMarks }"> -->
+          <span  v-bind:class="{active_Span: item.name == actionMarks }">
+              {{item.name}}
           </span>
         </li>
       </ul>
@@ -18,15 +19,19 @@
 
 <script>
 
-
 export default {
     data(){
         return{
-            action: {
-              '推荐': 'home',
-              '排行': 'ranking',
-              '歌手': 'singer',
-              },
+            action: [{
+              name:'推荐',
+              site: 'home'
+            },{
+              name:'排行',
+              site: 'ranking'
+            },{
+              name:'歌手',
+              site: 'singer'
+            }],
         }
     },
     props: {

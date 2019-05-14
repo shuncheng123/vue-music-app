@@ -4,7 +4,7 @@
         <ul>
             <li  v-for="(item,index) in rankingList" :key="index">
                 <div>
-                    <img  v-bind:src="item.coverImgUrl" alt="">
+                    <img v-lazy="item.coverImgUrl" lazy="loading loaded" alt="">
                 </div>
                 <div class="musicList">
                     <p v-for="(song,i) in item.top" :key="i">{{i+1}}.&nbsp;{{song.name}}</p>
@@ -80,7 +80,14 @@ export default {
             }
             img{
                 height: 1.82rem;
-                
+            }
+            img[lazy=loading]{
+                background-image: url('../../public/img/default.png');
+                background-size: 100%;
+            }
+            img[lazy=loaded]{
+                background-image: url('../../public/img/default.png');
+                background-size: 100%;
             }
             .musicList{
                 margin-left: 0.34rem;

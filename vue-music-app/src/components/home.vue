@@ -1,6 +1,5 @@
 <template>
   <div id="page">
-    
     <heads actionMarks="推荐"></heads>
     <div class="recommend">
       <div class="redBg"></div>
@@ -19,10 +18,10 @@
         <ul class="recommendMusic">
           <li v-for="(item,index) in recommendList" :key="index">
             <div>
-              <img v-bind:src="item.picUrl" alt="">
+              <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
               <div class="musicCount">
                 <i class="iconfont icon-erji"></i>
-                <span>&nbsp;&nbsp;{{item.playCount | conversion}}万</span>
+                <span>&nbsp;&nbsp;{{item.playCount | conversion}}</span>
               </div>
             </div>
             <p>{{item.name}}</p>
@@ -95,12 +94,20 @@ export default {
   },
   filters: {
       conversion(count){
-        return count.toString().slice(0,2);
+        count = count.toString().split('.')[0];
+        if(count.length >= 9){
+            console.log(Number(count)/100000000);
+           return ((Number(count)/100000000).toFixed(1)/1) + '亿';
+        }else if(count.length >= 5){
+           return (Number(count)/10000).toFixed(0) + '万';
+        }else{
+          return count;
+        }
       }
   },
   computed: {
       swiper() {
-        return this.$refs.mySwiper.swiper
+        return this.$refs.mySwiper.swiper;
       },
       
   },
@@ -171,7 +178,6 @@ export default {
         li{
           float: left;
           width: 2.34rem;
-          height: 3.35rem;
           padding-right: .14rem;
 
           > div{
@@ -180,6 +186,14 @@ export default {
 
             img{
               width: 100%;
+            }
+            img[lazy=loading]{
+                background-image: url('../../public/img/default.png');
+                background-size: 100%;
+            }
+            img[lazy=loaded]{
+                background-image: url('../../public/img/default.png');
+                background-size: 100%;
             }
             .musicCount{
               position: absolute;
@@ -194,6 +208,12 @@ export default {
           p{
             font-size: .22rem;
             color: #323233;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            height: 0.70rem;
+            margin-bottom: 0.10rem;
           }
         }
         li:nth-child(3n){
