@@ -1,32 +1,30 @@
 <template>
   <div id="page">
-    <heads actionMarks="推荐"></heads>
-    <div class="recommend">
+    <router-view :upadteNot-nextTick="rollback"></router-view>
+    <heads actionMarks="推荐" v-if="isSkip"></heads>
+    <div class="recommend" v-if="isSkip">
       <div class="redBg"></div>
       <div class="bannerSty">
-        <swiper :options="swiperOption" :not-next-tick="notNextTick" ref="mySwiper">
-        <!-- slides -->
+        <swiper :options="swiperOption"  ref="mySwiper">
           <swiper-slide v-for="(item,index) in banners" :key="index"><img v-bind:src="item.imageUrl" alt=""></swiper-slide>
           <div class="swiper-pagination"></div>
-          <!-- Optional controls -->
           <div class="swiper-pagination"  slot="pagination"></div>
-          
         </swiper>
       </div>
       <h3>推荐歌单</h3>
         
-        <ul class="recommendMusic">
-          <li v-for="(item,index) in recommendList" :key="index">
-            <div>
-              <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
-              <div class="musicCount">
-                <i class="iconfont icon-erji"></i>
-                <span>&nbsp;&nbsp;{{item.playCount | conversion}}</span>
-              </div>
+      <ul class="recommendMusic">
+        <li v-for="(item,index) in recommendList" @click="enetrSong(item)" :key="index">
+          <div>
+            <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
+            <div class="musicCount">
+              <i class="iconfont icon-erji"></i>
+              <span>&nbsp;&nbsp;{{item.playCount | conversion}}</span>
             </div>
-            <p>{{item.name}}</p>
-          </li>
-        </ul>
+          </div>
+          <p>{{item.name}}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -44,10 +42,10 @@ export default {
   name: 'home',// ???
   data(){
     return{
-      actionMrka: 1,
+      count: 0,
       banners: [], //轮播图
       recommendList: [], //推荐歌单
-
+      isSkip: true, //是否切换
       notNextTick: true,
       swiperOption: {
         autoplay: true,
@@ -88,15 +86,18 @@ export default {
 
       
     },
-    action_atv(index){ // 点击按钮切换下标
-      this.actionMrka = index;
+    enetrSong(data){
+      this.isSkip = false;
+      this.$router.push({name: 'songList', params: {id: data.id,site: 'home', info : data}})
+    },
+    rollback(){
+      console.log('rollback进来了');
     }
   },
   filters: {
       conversion(count){
         count = count.toString().split('.')[0];
         if(count.length >= 9){
-            console.log(Number(count)/100000000);
            return ((Number(count)/100000000).toFixed(1)/1) + '亿';
         }else if(count.length >= 5){
            return (Number(count)/10000).toFixed(0) + '万';
@@ -112,18 +113,10 @@ export default {
       
   },
   mounted() {
-    
-    // console.log('this is current swiper instance object', this.swiper)
-    // this.swiper.slideTo(3, 1000, false)
-
+    console.log(this.count++);
     this.init();
-    
 
   }
-  
-  // mounted(): {
-  //     var mySwiper = new Swiper('.swiper-container', {})
-  // }
 }
 
 </script>

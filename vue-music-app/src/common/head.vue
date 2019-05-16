@@ -8,7 +8,6 @@
       
       <ul class="action">
         <li v-for="(item,index) in action" @click="action_atv(index,item.site)" :key="index">
-          <!-- <span  v-bind:class="{active_Span: index == actionMarks }"> -->
           <span  v-bind:class="{active_Span: item.name == actionMarks }">
               {{item.name}}
           </span>
@@ -42,7 +41,7 @@ export default {
     },
     methods: {
         action_atv(index,site){ 
-          this.$router.push({ name: site})
+          this.$router.push({ name: site});
         },
         update_actMrk(status){
           // this.actionMark = status;
