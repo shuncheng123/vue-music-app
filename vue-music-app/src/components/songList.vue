@@ -1,13 +1,8 @@
 <template>
-  <div class="songList" id="songList"  ref="songList">
-    <div
-      class="coverPage"
-      :style="{
-        backgroundImage: 'url(' + this.$route.params.info.picUrl + ')'
-      }"
-    >
+  <div class="songList" id="songList"  ref="songListEl">
+    <div class="coverPage" :style="{backgroundImage: 'url(' + this.$route.params.info.picUrl + ')'}">
       <div class="coverPage-head">
-        <i class="iconfont icon-left1" @click="rollback()"></i>
+        <i class="iconfont icon-left1" @click="$router.go(-1);"></i>
         <h2>歌单</h2>
       </div>
       <div class="coverPage-info">
@@ -20,12 +15,12 @@
     </div>
 
     <div class="playForm">
-    <div class="playAll">
-        <i class="iconfont icon-bofang1"></i>
-        <p>
-        播放全部<span>(共{{ this.$route.params.info.trackCount }}首)</span>
-        </p>
-    </div>
+      <div class="playAll">
+          <i class="iconfont icon-bofang1"></i>
+          <p>
+          播放全部<span>(共{{ this.$route.params.info.trackCount }}首)</span>
+          </p>
+      </div>
       <ul>
         <li v-for="(item, index) in songmusicList" :key="index">
           <p>{{ index + 1 }}</p>
@@ -61,34 +56,23 @@ export default {
           console.log(error);
         });
     },
-    rollback(){
-        // 回退功能  跳转到父路由,显示父路由内自己的组件
-        //  1.通过this.$router.go(-1)。但是如何传参 
-        //
-        //
-        //
-        console.log(this.$route.params.site);
-
-        this.$router.replace({name: this.$route.params.site, params:{mark: true}});
-        this.$router.go(-1);
-    }
   },
+
   create(){
-    //   window.addEventListener('scroll',function(e){
-    //     //document.body.scrollTop
-    //         console.log(document.documentElement.scrollTop);
-    //     })
-  },
-  mounted() {
-      
-      
-      //此方法在嵌套路由进行多次来回跳转时,会多次执行
-    this.init(this.$route.params.id);
-
-    console.log(history);
     
-
   },
+
+  mounted() {
+        console.log(this.$refs.songListEl);
+
+    this.$refs.songListEl.addEventListener('scroll',function(e){
+        console.log(this.$refs.songListEl.scrollTop);
+    }.bind(this))
+
+    //此方法在嵌套路由进行多次来回跳转时,会多次执行
+    this.init(this.$route.params.id);
+  },
+
   filters: {
     conversion(count) {
       return utils.conversion(count);
@@ -100,7 +84,13 @@ export default {
 
 <style scoped lang="scss">
 .songList {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000000;
   font-size: 0.24rem;
+  overflow: scroll;
+  height: 13.34rem;
 
   // 歌单信息
   .coverPage {
@@ -150,6 +140,7 @@ export default {
       .playAll{
             height: 0.70rem;
             line-height: 0.70rem;
+            background: #f1f4f4;
 
             i{
                 text-align: center;

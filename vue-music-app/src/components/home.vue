@@ -1,8 +1,7 @@
 <template>
   <div id="page">
-    <router-view :upadteNot-nextTick="rollback"></router-view>
-    <heads actionMarks="推荐" v-if="isSkip"></heads>
-    <div class="recommend" v-if="isSkip">
+    <heads actionMarks="推荐" ></heads>
+    <div class="recommend" >
       <div class="redBg"></div>
       <div class="bannerSty">
         <swiper :options="swiperOption"  ref="mySwiper">
@@ -26,6 +25,11 @@
         </li>
       </ul>
     </div>
+
+    <transition name="slide">
+        <router-view></router-view>
+    </transition>
+
   </div>
 </template>
 
@@ -42,10 +46,8 @@ export default {
   name: 'home',// ???
   data(){
     return{
-      count: 0,
       banners: [], //轮播图
       recommendList: [], //推荐歌单
-      isSkip: true, //是否切换
       notNextTick: true,
       swiperOption: {
         autoplay: true,
@@ -87,12 +89,9 @@ export default {
       
     },
     enetrSong(data){
-      this.isSkip = false;
       this.$router.push({name: 'songList', params: {id: data.id,site: 'home', info : data}})
     },
-    rollback(){
-      console.log('rollback进来了');
-    }
+    
   },
   filters: {
       conversion(count){
@@ -113,7 +112,6 @@ export default {
       
   },
   mounted() {
-    console.log(this.count++);
     this.init();
 
   }
@@ -123,6 +121,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped >
+
+
+  //过渡动画
+  .slide-enter-active,.slide-leave-active{
+      transition: all 0.3s;
+  }
+  .slide-enter,.slide-leave-to{
+      transform: translate3d(100%,0,0)
+  }
 
   #page{
     width: 7.50rem;
