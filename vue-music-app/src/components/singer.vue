@@ -1,7 +1,7 @@
 <template>
   <div id="singer">
     <heads actionMarks="歌手"></heads>
-    <div class="singerConten" ref="singerContenEl">
+    <div class="singerConten" ref="singerContenEl" >
       <div class="singer" ref="singerEl"  >
         <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
           <h4>{{ item.title | titleChange }}</h4>

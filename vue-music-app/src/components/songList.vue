@@ -1,36 +1,36 @@
 <template>
-  <div class="songList" id="songList"  ref="songListEl">
-    <div class="coverPage" :style="{backgroundImage: 'url(' + this.$route.params.info.picUrl + ')'}">
-      <div class="coverPage-head">
+  <div class="songList" id="songList"   ref="songListEl">
+    <div class="songList-head" :style="{background: 'rgba(212, 68, 57,'+diaphaneity+')'}">
         <i class="iconfont icon-left1" @click="$router.go(-1);"></i>
-        <h2>歌单</h2>
-      </div>
-      <div class="coverPage-info">
-        <h3>{{ this.$route.params.info.name }}</h3>
-        <p>
-          <i class="iconfont icon-erji"></i
-          ><span>{{ this.$route.params.info.playCount | conversion }}</span>
-        </p>
-      </div>
+        <h2 >{{titleName}}</h2>
+    </div>
+    <div class="coverPage" :style="{backgroundImage: 'url(' + this.$route.params.info.picUrl + ')'}">
+        <div class="coverPage-info">
+            <h3>{{ this.$route.params.info.name }}</h3>
+            <p>
+                <i class="iconfont icon-erji"></i><span>{{ this.$route.params.info.playCount | conversion }}</span>
+            </p>
+        </div>
     </div>
 
     <div class="playForm">
-      <div class="playAll">
-          <i class="iconfont icon-bofang1"></i>
-          <p>
-          播放全部<span>(共{{ this.$route.params.info.trackCount }}首)</span>
-          </p>
-      </div>
-      <ul>
-        <li v-for="(item, index) in songmusicList" :key="index">
-          <p>{{ index + 1 }}</p>
-          <div>
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.ar[0].name }}</p>
-          </div>
-        </li>
-      </ul>
+        <div class="playAll">
+            <i class="iconfont icon-bofang1"></i>
+            <p>
+            播放全部<span>(共{{ this.$route.params.info.trackCount }}首)</span>
+            </p>
+        </div>
+        <ul>
+            <li v-for="(item, index) in songmusicList" :key="index">
+            <p>{{ index + 1 }}</p>
+            <div>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.ar[0].name }}</p>
+            </div>
+            </li>
+        </ul>
     </div>
+   
   </div>
 </template>
 
@@ -42,7 +42,9 @@ import axios from "axios";
 export default {
   data() {
     return {
-      songmusicList: []
+      songmusicList: [],
+      diaphaneity: 0,
+      titleName: '歌单',
     };
   },
   methods: {
@@ -56,20 +58,29 @@ export default {
           console.log(error);
         });
     },
+    add(){
+        this.one = false;
+       return utils.throttle.apply(this,arguments);
+    },
+    scroll_Action(){
+        var InscrollTop = this.$refs.songListEl.scrollTop;
+        if(InscrollTop <= 300){
+            this.diaphaneity = (InscrollTop /300).toFixed(2);
+            this.titleName = '歌单';
+        }else{
+            this.diaphaneity = 1;
+            this.titleName = this.$route.params.info.name;
+        }
+    }
   },
 
   create(){
     
   },
 
-  mounted() {
-        console.log(this.$refs.songListEl);
-
-    this.$refs.songListEl.addEventListener('scroll',function(e){
-        console.log(this.$refs.songListEl.scrollTop);
-    }.bind(this))
-
     //此方法在嵌套路由进行多次来回跳转时,会多次执行
+  mounted() {
+    this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
     this.init(this.$route.params.id);
   },
 
@@ -87,36 +98,52 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000000;
+  z-index: 100;
   font-size: 0.24rem;
   overflow: scroll;
   height: 13.34rem;
+  background: #f1f4f4;
 
+    &-head{
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 100;
+        height: 0.8rem;
+        line-height: 0.8rem;
+        color: #f1f4f4;
+        background: rgba(255,0,0,0.5);
+        i {
+            padding: 0 0.1rem;
+            display: inline-block;
+            font-size: 0.4rem;
+        }
+        h2{
+        display: inline-block;
+        font-size: 0.34rem;
+        font-weight: normal;
+        }
+    }
   // 歌单信息
   .coverPage {
     position: relative;
     height: 5.5rem;
     background-size: cover;
     background-position: 0 30%;
-    &-head{
-      height: 0.8rem;
-      line-height: 0.8rem;
-      color: #f1f4f4;
-        background: rgba(255,0,0,0.5);
-      i {
-        padding: 0 0.1rem;
-        display: inline-block;
-        font-size: 0.4rem;
-      }
-      h2{
-        display: inline-block;
-        font-size: 0.34rem;
-      }
+
+    &::before{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0.2;
     }
+    
     &-info{
         color: #fbfbfb;
         position: absolute;
-        bottom: 0.25rem;
+        bottom: 0.45rem;
         padding-left: 0.25rem;
 
         h3{
@@ -137,9 +164,14 @@ export default {
 
     // 歌单列表
   .playForm{
+        position: relative;
+        width: 100%;
+        top: -0.20rem;
       .playAll{
             height: 0.70rem;
             line-height: 0.70rem;
+            border-top-left-radius: 0.20rem;
+            border-top-right-radius: 0.20rem;
             background: #f1f4f4;
 
             i{
@@ -159,7 +191,7 @@ export default {
 
         }
       ul{
-          background-color: #f1f4f4;
+        
         li{
             display: flex;
             height: 1.1rem;

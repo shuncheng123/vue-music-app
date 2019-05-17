@@ -18,8 +18,10 @@ export default {
     // 节流
     throttle(method, delay){
         let last = 0; //采用闭包来封装全局功能,这个闭包属性很关键(如果不采用闭包属性,那么last属性就必须定义在组件内)
+        let key = null;
         return function(){
             let now = new Date();
+            clearInterval(key);
             if(last == 0){ //首次不执行
                 last = now;
             }
@@ -27,6 +29,10 @@ export default {
                 method.apply(this,arguments);
                 last = now;
             }
+            //事件触发停止后，隔150ms再执行一次
+            key = setTimeout(function(){
+                method.apply(this,arguments);
+            }.bind(this),50);
         }
     },
 
@@ -40,5 +46,6 @@ export default {
         }else{
           return count;
         }
-      }
+      },
+    
 }
