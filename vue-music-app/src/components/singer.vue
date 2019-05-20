@@ -5,7 +5,7 @@
       <div class="singer" ref="singerEl"  >
         <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
           <h4>{{ item.title | titleChange }}</h4>
-          <li v-for="(gingerName, i) in item.singer" :key="i">
+          <li v-for="(gingerName, i) in item.singer" @click="singerInfo(gingerName)" :key="i">
             <div>
               <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
             </div>
@@ -19,6 +19,9 @@
         </ul>
       </div>
     </div>
+    <transition name="slide">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -137,6 +140,9 @@ export default {
                 return ;
             }
         }
+    },
+    singerInfo(singerInfo){
+        this.$router.push({name: 'singerDetails',params: {id: singerInfo.id, singerInfo}})
     }
   },
   filters: {
@@ -151,6 +157,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+  //过渡动画
+  .slide-enter-active,.slide-leave-active{
+      transition: all 0.3s;
+  }
+  .slide-enter,.slide-leave-to{
+      transform: translate3d(100%,0,0)
+  }
+
 #singer {
 
   .singerConten {
@@ -211,7 +226,7 @@ export default {
         align-items: center;
 
       ul {
-        font-size: 0.16rem;
+        font-size: 0.22rem;
         text-align: center;
       }
       li{

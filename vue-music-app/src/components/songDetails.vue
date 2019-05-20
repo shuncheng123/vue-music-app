@@ -17,7 +17,7 @@
         <div class="playAll">
             <i class="iconfont icon-bofang1"></i>
             <p>
-            播放全部<span>(共{{ this.$route.params.info.trackCount }}首)</span>
+            播放全部<span>(共{{ songmusicList.length}}首)</span>
             </p>
         </div>
         <ul>
@@ -29,6 +29,9 @@
             </div>
             </li>
         </ul>
+        <div v-show="!songmusicList.length" class="loadingBox">
+            <Loading></Loading>
+        </div>
     </div>
    
   </div>
@@ -38,6 +41,8 @@
 <script>
 import utils from "../api/utils.js";
 import axios from "axios";
+
+import Loading from "../common/loading"
 
 export default {
   data() {
@@ -53,6 +58,7 @@ export default {
         .get("http://localhost:3000/playlist/detail?id=" + songlistId)
         .then(response => {
           this.songmusicList = response.data.playlist.tracks;
+          this.isLoading = false;
         })
         .catch(error => {
           console.log(error);
@@ -73,15 +79,14 @@ export default {
         }
     }
   },
-
-  create(){
-    
+  components:{
+      Loading,
   },
-
     //此方法在嵌套路由进行多次来回跳转时,会多次执行
   mounted() {
     this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
     this.init(this.$route.params.id);
+    console.log(this.$route.params.info);
   },
 
   filters: {
@@ -222,6 +227,10 @@ export default {
                 }
             }
           }
+      }
+      .loadingBox{
+        height: 7.64rem;
+        line-height: 7.64rem;
       }
       
       }

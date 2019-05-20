@@ -66,7 +66,7 @@ export default {
   components: {
     swiper,
     swiperSlide,
-    heads: heads,
+    heads,
   },
   methods: {
     init(){
@@ -89,7 +89,7 @@ export default {
       
     },
     enetrSong(data){
-      this.$router.push({name: 'songList', params: {id: data.id,site: 'home', info : data}})
+      this.$router.push({name: 'songDetails', params: {id: data.id,site: 'home', info : data}})
     },
     
   },
