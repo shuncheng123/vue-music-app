@@ -21,7 +21,7 @@
             </p>
         </div>
         <ul>
-            <li v-for="(item, index) in songmusicList" :key="index">
+            <li v-for="(item, index) in songmusicList" @click="playAction(item)" :key="index">
             <p>{{ index + 1 }}</p>
             <div>
                 <h3>{{ item.name }}</h3>
@@ -77,6 +77,9 @@ export default {
             this.diaphaneity = 1;
             this.titleName = this.$route.params.info.name;
         }
+    },
+    playAction(item){
+      this.$router.push({name: 'playInterface', params:{data: item}})
     }
   },
   components:{
@@ -86,7 +89,6 @@ export default {
   mounted() {
     this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
     this.init(this.$route.params.id);
-    console.log(this.$route.params.info);
   },
 
   filters: {

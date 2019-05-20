@@ -5,7 +5,8 @@ import Ranking from '../components/ranking.vue'
 import Singer from '../components/singer.vue'
 import SongDetails from '../components/songDetails.vue'
 import SingerDetails from '../components/singerDetails.vue'
-import Loading from '../common/loading.vue'
+import PlayInterface from '../components/playInterface.vue'
+
 
 
 
@@ -49,6 +50,10 @@ export default new Router({
           component: SingerDetails,
         }
       ]
+    },{
+      path: '/home/:id',
+      name: 'playInterface',
+      component: PlayInterface
     },
     
   ]

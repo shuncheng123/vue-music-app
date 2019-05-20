@@ -89,10 +89,11 @@ export default {
       
     },
     enetrSong(data){
-      this.$router.push({name: 'songDetails', params: {id: data.id,site: 'home', info : data}})
+      this.$router.push({name: 'songDetails', params: {id: data.id,info : data}})
     },
     
   },
+
   filters: {
       conversion(count){
         count = count.toString().split('.')[0];

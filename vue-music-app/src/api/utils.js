@@ -1,3 +1,7 @@
+
+
+import axios from 'axios';
+
 export default {
 
     // 对象数组去重
@@ -47,5 +51,35 @@ export default {
           return count;
         }
       },
+
+    // request
+        /* 
+                         url  String    请求地址
+                 requestType  String    请求类型
+             successCallback  Function  成功回调
+                       param  Object    请求对象
+        
+        */
+
+    requestAction(url, requestType, successCallback, param ){
+
+        let resove = (response)=> {
+            successCallback && successCallback(response.data);
+        }
+        let reject = (error)=> {
+            console.log('请求报错:'+ error);
+        } 
+
+        if(requestType === 'get'){
+            axios.get(url)
+            .then(resove)
+            .catch(reject)
+        }else if(requestType === 'post'){
+            axios.post(param, url)
+            .then(resove)
+            .catch(reject)
+        }
+
+    }
     
 }
