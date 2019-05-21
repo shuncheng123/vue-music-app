@@ -5,19 +5,25 @@
             <i class="iconfont icon-xiala" @click="$router.go(-2)"></i>
             <div>
                 <h3> {{songs.name}} </h3>
-                <p> {{musicName}} </p>
+                <p> {{songs.ar && songs.ar[0].name}} </p>
+
             </div>
         </div>
 
         <div class="playInterface-content">
             <div class="musicPicture">
                 <img :src="songs.al && songs.al.picUrl" alt="">
+
             </div>
         </div>
 
         <div class="playInterface-control">
             <div class="progressBar">
-
+                <span>0:00</span>
+                <div class="bar">
+                    <div class="ball"></div>
+                </div>
+                <span>0:00</span>
             </div>
             <div class="control">
                 <i class="iconfont icon-xunhuanbofang"></i>
@@ -55,14 +61,17 @@ export default {
     },
     mounted(){
         this.init(this.$route.params.data.id);
+        
+    },
+    created(){
+        console.log(this);
     },
     methods:{
         init(id){
             let url = 'http://localhost:3000/song/detail?ids='+id;
-            utils.requestAction(url, 'get', (response) => {
+            utils.sendRequest(url, 'get', (response) => {
                 this.songs = response.songs[0];
                 console.log(response.songs);
-                // console.log(this.songs.ar[0].name);
 
             });
         }
@@ -82,6 +91,7 @@ export default {
             text-align: center;
             height: 1rem;
             line-height: 1rem;
+            color: #f1f1f1;
             i{
                 position: absolute;
                 left: 0rem;
@@ -132,7 +142,31 @@ export default {
             font-size: 0rem;
 
             .progressBar{
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.26rem;
+                align-items: center;
+                margin-bottom: 0.15rem;
 
+                span{
+
+                }
+
+                .bar{
+                    position: relative;
+                    width: 4.6rem;
+                    height: 0.10rem;
+                    background: #333;
+                }
+                .ball{
+                    position: absolute;
+                    top: -0.12rem;
+                    width: 0.14rem;
+                    height: 0.14rem;
+                    border: 0.10rem solid #fff;
+                    background: #f00;
+                    border-radius: 50%;
+                }
             }   
 
             .control{
@@ -141,6 +175,7 @@ export default {
                 height: .88rem;
                 line-height: .88rem;
                 color: #fff;
+                
 
                 i{
                     font-size: 0.60rem;

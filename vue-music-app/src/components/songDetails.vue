@@ -54,16 +54,23 @@ export default {
   },
   methods: {
     init(songlistId) {
-      axios
-        .get("http://localhost:3000/playlist/detail?id=" + songlistId)
-        .then(response => {
-          this.songmusicList = response.data.playlist.tracks;
-          this.isLoading = false;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      // axios
+      //   .get("http://localhost:3000/playlist/detail?id=" + songlistId)
+      //   .then(response => {
+      //     this.songmusicList = response.data.playlist.tracks;
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
+
+      let url = 'http://localhost:3000/playlist/detail?id='+songlistId;
+      utils.sendRequest(url, 'get', (response) => {
+          this.songmusicList = response.playlist.tracks;
+      });
+
+
     },
+    
     add(){
         this.one = false;
        return utils.throttle.apply(this,arguments);
@@ -87,8 +94,9 @@ export default {
   },
     //此方法在嵌套路由进行多次来回跳转时,会多次执行
   mounted() {
-    this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
     this.init(this.$route.params.id);
+    this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
+    
   },
 
   filters: {

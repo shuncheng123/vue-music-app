@@ -53,15 +53,15 @@ export default {
       },
 
     // request
-        /* 
-                         url  String    请求地址
-                 requestType  String    请求类型
-             successCallback  Function  成功回调
-                       param  Object    请求对象
-        
-        */
+    /* 
+                        url  String    请求地址
+                requestType  String    请求类型
+            successCallback  Function  成功回调
+                    param  Object    请求对象
+    
+    */
 
-    requestAction(url, requestType, successCallback, param ){
+    sendRequest(url, requestType, successCallback, param ){
 
         let resove = (response)=> {
             successCallback && successCallback(response.data);
