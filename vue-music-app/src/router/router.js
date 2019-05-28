@@ -13,6 +13,7 @@ import PlayInterface from '../components/playInterface.vue'
 
 
 
+
 Vue.use(Router)
 
 export default new Router({
@@ -56,7 +57,6 @@ export default new Router({
       path: '/home/:id',
       name: 'playInterface',
       component: PlayInterface
-    },
-    
+    }
   ]
 })

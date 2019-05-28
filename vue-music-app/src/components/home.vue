@@ -1,8 +1,11 @@
 <template>
-  <div id="page">
+  <div id="page" >
     <heads actionMarks="推荐" ></heads>
-    <div class="recommend" >
+    <div class="recommend" ref="wrapper">
+      <div class="content">
+
       <div class="redBg"></div>
+        
       <div class="bannerSty">
         <swiper :options="swiperOption"  ref="mySwiper">
           <swiper-slide v-for="(item,index) in banners" :key="index"><img v-bind:src="item.imageUrl" alt=""></swiper-slide>
@@ -24,6 +27,8 @@
           <p>{{item.name}}</p>
         </li>
       </ul>
+      </div>
+      
     </div>
 
     <transition name="slide">
@@ -37,7 +42,8 @@
 
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.min.css';
-import axios from 'axios'
+import axios from 'axios';
+import Bscroll from 'better-scroll';
 
 import heads from '../common/head'
 
@@ -115,6 +121,7 @@ export default {
   mounted() {
     this.init();
 
+    this.scroll = new Bscroll(this.$refs.wrapper);
   }
 }
 
@@ -139,14 +146,16 @@ export default {
 
     // 推荐 
     .recommend{
-      overflow: scroll;
+      // overflow: scroll;
       height: calc(13.34rem - 1.60rem);
       position: relative;
       .redBg{
-        background: #d44538;
-        height: 2.7rem;
         width: 100%;
         position: absolute;
+        top: -5.3rem;
+        height: 8rem;
+        background: #d44538;
+
       }
       .bannerSty{
         padding: 0 0.15rem;
