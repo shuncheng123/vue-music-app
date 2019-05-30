@@ -3,30 +3,29 @@
     <heads actionMarks="推荐" ></heads>
     <div class="recommend" ref="wrapper">
       <div class="content">
-
-      <div class="redBg"></div>
-        
-      <div class="bannerSty">
-        <swiper :options="swiperOption"  ref="mySwiper">
-          <swiper-slide v-for="(item,index) in banners" :key="index"><img v-bind:src="item.imageUrl" alt=""></swiper-slide>
-          <div class="swiper-pagination"></div>
-          <div class="swiper-pagination"  slot="pagination"></div>
-        </swiper>
-      </div>
-      <h3>推荐歌单</h3>
-        
-      <ul class="recommendMusic">
-        <li v-for="(item,index) in recommendList" @click="enetrSong(item)" :key="index">
-          <div>
-            <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
-            <div class="musicCount">
-              <i class="iconfont icon-erji"></i>
-              <span>&nbsp;&nbsp;{{item.playCount | conversion}}</span>
+        <div class="redBg"></div>
+          
+        <div class="bannerSty">
+          <swiper :options="swiperOption"  ref="mySwiper">
+            <swiper-slide v-for="(item,index) in banners" :key="index"><img v-bind:src="item.imageUrl" alt=""></swiper-slide>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-pagination"  slot="pagination"></div>
+          </swiper>
+        </div>
+        <h3>推荐歌单</h3>
+          
+        <ul class="recommendMusic">
+          <li v-for="(item,index) in recommendList" @click="enetrSong(item)" :key="index">
+            <div>
+              <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
+              <div class="musicCount">
+                <i class="iconfont icon-erji"></i>
+                <span>&nbsp;&nbsp;{{item.playCount | conversion}}</span>
+              </div>
             </div>
-          </div>
-          <p>{{item.name}}</p>
-        </li>
-      </ul>
+            <p>{{item.name}}</p>
+          </li>
+        </ul>
       </div>
       
     </div>
@@ -146,14 +145,17 @@ export default {
 
     // 推荐 
     .recommend{
-      // overflow: scroll;
+      position: fixed;
+      top: 1.6rem;
+      z-index: -10;
       height: calc(13.34rem - 1.60rem);
-      position: relative;
+      width: 100%;
+
       .redBg{
         width: 100%;
         position: absolute;
-        top: -5.3rem;
-        height: 8rem;
+        top: -6.3rem;
+        height: 9rem;
         background: #d44538;
 
       }

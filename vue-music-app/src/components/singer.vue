@@ -1,24 +1,30 @@
 <template>
   <div id="singer">
     <heads actionMarks="歌手"></heads>
-    <div class="singerConten" ref="singerContenEl" >
-      <div class="singer" ref="singerEl"  >
-        <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
-          <h4>{{ item.title | titleChange }}</h4>
-          <li v-for="(gingerName, i) in item.singer" @click="singerInfo(gingerName)" :key="i">
-            <div>
-              <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
-            </div>
-            <p>{{ gingerName.name }}</p>
-          </li>
-        </ul>
+
+    <div class="wrapper" ref="wrapper">
+
+      <div class="singerConten content" ref="singerContenEl" >
+        <div class="singer" ref="singerEl"  >
+          <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
+            <h4>{{ item.title | titleChange }}</h4>
+            <li v-for="(gingerName, i) in item.singer" @click="singerInfo(gingerName)" :key="i">
+              <div>
+                <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
+              </div>
+              <p>{{ gingerName.name }}</p>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="list-shortcut">
         <ul>
           <li v-for="(item, index) in shortcutList" @click="shortcutAisle(index)"  :class="shortcutActive == index?'active':''" :key="index">{{ item | letterChange }}</li>
         </ul>
       </div>
+
     </div>
+
     <transition name="slide">
       <router-view></router-view>
     </transition>
@@ -28,9 +34,11 @@
 <script>
 import axios from "axios";
 import pinyin from "js-pinyin";
+import Bscroll from 'better-scroll'
 
 import heads from "../common/head";
 import utils from "../api/utils";
+
 
 export default {
   data() {
@@ -41,12 +49,18 @@ export default {
     };
   },
   mounted() {
+    
     this.init();
 
     // 错误：singerEl[0] == undefined 下文可以获取
     // var singerEl = this.$refs.singerEl.children;
     // var liElHeight = singerEl[0].lastElementChild.offsetHeight;
-    this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,200));
+    // this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,200));
+
+    this.$nextTick(() =>{
+      this.getHeight();
+    })
+    
   },
   components: {
     heads
@@ -114,6 +128,13 @@ export default {
           });
       });
     },
+    getHeight(){
+      this.list = new Bscroll(this.$refs.wrapper);
+        
+      this.list.on('scroll', (pos) => {
+        console.log(1)
+      })
+    },
     // 右侧“快捷导航”点击事件
     shortcutAisle(index){
 
@@ -128,6 +149,8 @@ export default {
     
     // 触发Div滚动事件，
     moveSingerList(){
+                console.log(123);
+
         var singerEl = this.$refs.singerEl.children;
         var liElHeight = singerEl[0].lastElementChild.offsetHeight;
         var headEl = this.$refs.singerContenEl.offsetTop + liElHeight;// 头部高度
@@ -168,10 +191,12 @@ export default {
 
 #singer {
 
-  .singerConten {
-    position: relative;
-    overflow: scroll;
+  .wrapper{
+    overflow: hidden;
     height: calc(13.34rem - 1.6rem);
+  }
+  .singerConten {
+    
 
     .singer {
         font-size: 0.2rem;
@@ -216,17 +241,23 @@ export default {
         }
       }
     }
+  }
 
-    .list-shortcut {
-        display: flex;
+  .list-shortcut {
         position: fixed;
-        right: 0;
+        width: 0.40rem;
+        right: 0.10rem;
         top: 1.6rem;
         bottom: 0;
-        align-items: center;
+        
 
       ul {
-        font-size: 0.22rem;
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        right: 0rem;
+        transform: translateY(-50%);
+        font-size: 0.26rem;
         text-align: center;
       }
       li{
@@ -236,6 +267,5 @@ export default {
         }
       }
     }
-  }
 }
 </style>

@@ -1,16 +1,19 @@
 <template>
     <div id="ranking">
         <heads actionMarks="排行"></heads>
-        <ul>
-            <li  v-for="(item,index) in rankingList" :key="index">
-                <div>
-                    <img v-lazy="item.coverImgUrl" lazy="loading loaded" alt="">
-                </div>
-                <div class="musicList">
-                    <p v-for="(song,i) in item.top" :key="i">{{i+1}}.&nbsp;{{song.name}}</p>
-                </div>
-            </li>
-        </ul>
+        <div class="wrapper" ref="wrapper">
+            <ul  class="content">
+                <li  v-for="(item,index) in rankingList" :key="index">
+                    <div>
+                        <img v-lazy="item.coverImgUrl" lazy="loading loaded" alt="">
+                    </div>
+                    <div class="musicList">
+                        <p v-for="(song,i) in item.top" :key="i">{{i+1}}.&nbsp;{{song.name}}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
     </div>
     
 </template>
@@ -18,6 +21,8 @@
 <script>
 
 import axios from 'axios'
+import Bscroll from 'better-scroll'
+
 import heads from '../common/head'
 
 
@@ -55,11 +60,12 @@ export default {
             }
         }
     },
-    created(){
-        this.init();
-    },
     mounted(){
+        this.init();
+
+        this.scroll = new Bscroll(this.$refs.wrapper);
         // console.log("接收值："+this.$route.params.actionMrka);
+        
     }
 }
 </script>
@@ -67,44 +73,46 @@ export default {
 <style lang="scss" scoped >
     #ranking{
 
-        ul{
-            padding: 0.10rem 0.16rem;
-            height: calc(13.34rem - 1.6rem - 0.20rem); 
-            overflow: scroll;
+        .wrapper{
+                padding: 0.10rem 0.16rem;
+                height: calc(13.34rem - 1.6rem - 0.20rem); 
+            ul{
 
-            li{
-                display: flex;
-                padding: 0.08rem 0;
-                border-bottom: 0.02rem solid #ccc; 
-                font-size: 0;
-            }
-            img{
-                height: 1.82rem;
-            }
-            img[lazy=loading]{
-                background-image: url('../../public/img/default.png');
-                background-size: 100%;
-            }
-            img[lazy=loaded]{
-                background-image: url('../../public/img/default.png');
-                background-size: 100%;
-            }
-            .musicList{
-                margin-left: 0.34rem;
-                font-size: 0.24rem;
-                padding: 0.16rem 0;
-
-                p{
+                li{
+                    display: flex;
                     padding: 0.08rem 0;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    width: 4rem;
-                    color: #2e3030,
+                    border-bottom: 0.02rem solid #ccc; 
+                    font-size: 0;
+                }
+                img{
+                    height: 1.82rem;
+                }
+                img[lazy=loading]{
+                    background-image: url('../../public/img/default.png');
+                    background-size: 100%;
+                }
+                img[lazy=loaded]{
+                    background-image: url('../../public/img/default.png');
+                    background-size: 100%;
+                }
+                .musicList{
+                    margin-left: 0.34rem;
+                    font-size: 0.24rem;
+                    padding: 0.16rem 0;
+
+                    p{
+                        padding: 0.08rem 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        width: 4rem;
+                        color: #2e3030,
+                    }
                 }
             }
         }
     }
+
 </style>
 
     

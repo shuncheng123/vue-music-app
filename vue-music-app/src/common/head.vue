@@ -55,11 +55,9 @@ export default {
 
 <style lang="scss" scoped>
     .head{
-      position: relative;
       background: #d44538;
       color: #f1f1f1;    
       width: 7.50rem;
-      z-index: 100;
 
       .title{
         display: flex;
