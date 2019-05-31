@@ -1,7 +1,5 @@
 <template>
   <div id="singer">
-    <heads actionMarks="歌手"></heads>
-
     <div class="wrapper" ref="wrapper">
 
       <div class="singerConten content" ref="singerContenEl" >
@@ -17,36 +15,36 @@
           </ul>
         </div>
       </div>
+
+
       <div class="list-shortcut">
         <ul>
           <li v-for="(item, index) in shortcutList" @click="shortcutAisle(index)"  :class="shortcutActive == index?'active':''" :key="index">{{ item | letterChange }}</li>
         </ul>
       </div>
-
     </div>
 
-    <transition name="slide">
-      <router-view></router-view>
-    </transition>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import pinyin from "js-pinyin";
 import Bscroll from 'better-scroll'
-
-import heads from "../common/head";
-import utils from "../api/utils";
-
 
 export default {
   data() {
     return {
-      singerList: [],// 歌手列表
-      shortcutList: [],// 字母列表
       shortcutActive: 0,
     };
+  },
+  props:{
+      singerList:{
+          types: Array,
+          default: [],
+      },
+      shortcutList:{
+          types: Array,
+          default: [],
+      },
   },
   mounted() {
     
@@ -57,79 +55,19 @@ export default {
     // var liElHeight = singerEl[0].lastElementChild.offsetHeight;
     // this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,200));
 
-    this.$nextTick(() =>{
-      this.getHeight();
-    })
     
-  },
-  components: {
-    heads
+    
   },
   methods: {
     init() {
-      new Promise((resolve, reject) => {
-        axios.get("http://localhost:3000/toplist/artist?limit=10") // 热门歌手
-          .then(response => {
-            let list = response.data.list.artists.slice(0, 10);
-            resolve(list);
-          })
-          .catch(error => {
-            reject(error);
-          });
-      }).then(value => {
-        axios.get("http://localhost:3000/top/artists?limit=100") // 歌手
-          .then(response => {
-
-            let singerArrs = [];// 未排序得歌手总数组
-
-            let list = {};// 未排序
-            let newlist = {};// 已排序
-            
-            // 102条数据
-            let artists = response.data.artists;
-            artists = utils.unique(artists.concat(value), "id"); // 数组对象去重
-
-
-            artists.forEach(element => {
-              let pyinStr = pinyin.getFullChars(element.name).slice(0, 1);
-              if (list[pyinStr] === undefined) {
-                list[pyinStr] = [];
-              }
-              list[pyinStr].push(element);
-            });
-
-
-            //排序对象里的字母属性：
-            let letter = Object.keys(list).sort((a, b) => {
-              return a.charCodeAt() - b.charCodeAt();
-            });
-
-            //将热榜歌手插入在最前面
-            newlist["re"] = value;
-            //排序：根据字母顺序依次赋值给newlist
-            for (let i in letter) {
-              newlist[letter[i]] = list[letter[i]];
-            }
-
-            //添加属性：将已排序完成的数据newlist,添加新属性
-            for(let item in newlist){
-              var obj = {};
-              obj['title'] = item;
-              obj['singer'] = newlist[item];
-              singerArrs.push(obj)
-            }
-            this.singerList = singerArrs;
-            
-            var shortcutArr = Object.keys(newlist);
-            this.shortcutList = shortcutArr;
-          })
-          .catch(error => {
-            console.log("错误:" + error);
-          });
-      });
+        this.$nextTick(() =>{
+            this.getHeight();
+        })
     },
     getHeight(){
-      this.list = new Bscroll(this.$refs.wrapper);
+      this.list = new Bscroll(this.$refs.wrapper,{
+        click: true,
+      });
         
       this.list.on('scroll', (pos) => {
         console.log(1)
@@ -189,7 +127,6 @@ export default {
       transform: translate3d(100%,0,0)
   }
 
-#singer {
 
   .wrapper{
     overflow: hidden;
@@ -223,11 +160,11 @@ export default {
           }
           
           img[lazy=loading]{
-                background-image: url('../../public/img/default.png');
+                background-image: url('../../../public/img/default.png');
                 background-size: 100%;
             }
           img[lazy=loaded]{
-              background-image: url('../../public/img/default.png');
+              background-image: url('../../../public/img/default.png');
               background-size: 100%;
           }
           p {
@@ -267,5 +204,4 @@ export default {
         }
       }
     }
-}
 </style>

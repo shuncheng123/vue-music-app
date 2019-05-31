@@ -1,10 +1,8 @@
 <template>
-  <div id="page" >
-    <heads actionMarks="推荐" ></heads>
-    <div class="recommend" ref="wrapper">
-      <div class="content">
+    <div class="recommend" ref="wrapper" >
+      <div class="content" >
+
         <div class="redBg"></div>
-          
         <div class="bannerSty">
           <swiper :options="swiperOption"  ref="mySwiper">
             <swiper-slide v-for="(item,index) in banners" :key="index"><img v-bind:src="item.imageUrl" alt=""></swiper-slide>
@@ -13,7 +11,6 @@
           </swiper>
         </div>
         <h3>推荐歌单</h3>
-          
         <ul class="recommendMusic">
           <li v-for="(item,index) in recommendList" @click="enetrSong(item)" :key="index">
             <div>
@@ -27,33 +24,19 @@
           </li>
         </ul>
       </div>
-      
     </div>
-
-    <transition name="slide">
-        <router-view></router-view>
-    </transition>
-
-  </div>
 </template>
 
 <script>
 
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.min.css';
-import axios from 'axios';
 import Bscroll from 'better-scroll';
-
-import heads from '../common/head'
-
 
 export default {
   name: 'home',// ???
   data(){
     return{
-      banners: [], //轮播图
-      recommendList: [], //推荐歌单
-      notNextTick: true,
       swiperOption: {
         autoplay: true,
         direction: 'horizontal',// 横屏
@@ -63,42 +46,37 @@ export default {
         onTransitionStart (swiper) {
           console.log(swiper)
         }
-      // more Swiper configs and callbacks...
-      // ...
+
       }
     }
+  },
+  props:{
+      banners:{
+          types: Array,
+          default: [],
+      },
+      recommendList:{
+          types: Array,
+          default: [],
+      },
   },
   components: {
     swiper,
     swiperSlide,
-    heads,
+  },
+  mounted() {
+      this.init();
   },
   methods: {
     init(){
-      axios.get('http://localhost:3000/banner')
-      .then((response) => {
-        this.banners = response.data.banners;
-      })
-      .catch((error) => {
-        console.log("错误:"+error);
-      })
-
-      axios.get('http://localhost:3000/personalized')
-      .then((response) => {
-        this.recommendList = response.data.result;
-      })
-      .catch((error) => {
-        console.log("错误:"+error);
-      })
-
-      
+        this.scroll = new Bscroll(this.$refs.wrapper,{
+            click: true,
+        });
     },
     enetrSong(data){
-      this.$router.push({name: 'songDetails', params: {id: data.id,info : data}})
+      this.$router.push({name: 'recommendDetails', params: {id: data.id,info : data}})
     },
-    
   },
-
   filters: {
       conversion(count){
         count = count.toString().split('.')[0];
@@ -115,13 +93,8 @@ export default {
       swiper() {
         return this.$refs.mySwiper.swiper;
       },
-      
   },
-  mounted() {
-    this.init();
 
-    this.scroll = new Bscroll(this.$refs.wrapper);
-  }
 }
 
 </script>
@@ -130,18 +103,8 @@ export default {
 <style lang="scss" scoped >
 
 
-  //过渡动画
-  .slide-enter-active,.slide-leave-active{
-      transition: all 0.3s;
-  }
-  .slide-enter,.slide-leave-to{
-      transform: translate3d(100%,0,0)
-  }
+ 
 
-  #page{
-    width: 7.50rem;
-    // font-size: 0.3rem;
-    
 
     // 推荐 
     .recommend{
@@ -200,11 +163,11 @@ export default {
               width: 100%;
             }
             img[lazy=loading]{
-                background-image: url('../../public/img/default.png');
+                background-image: url('../../../public/img/default.png');
                 background-size: 100%;
             }
             img[lazy=loaded]{
-                background-image: url('../../public/img/default.png');
+                background-image: url('../../../public/img/default.png');
                 background-size: 100%;
             }
             .musicCount{
@@ -238,5 +201,4 @@ export default {
           
       
     }
-  }
 </style>

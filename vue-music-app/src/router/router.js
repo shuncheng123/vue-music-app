@@ -1,16 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../components/home.vue'
-import Ranking from '../components/ranking.vue'
-import Singer from '../components/singer.vue'
-import SongDetails from '../components/songDetails.vue'
-import SingerDetails from '../components/singerDetails.vue'
-import PlayInterface from '../components/playInterface.vue'
 
+import RecommendView from '../components/recommend/recommendView.vue'
+import RankingView from '../components/ranking/rankingView.vue'
+import SingerView from '../components/singer/singerView.vue'
 
-
-
-
+import RecommendDetails from '../components/recommend/recommendDetails.vue'
+import SingerDetails from '../components/singer/singerDetails.vue'
+import PlayView from '../components/play/playView.vue'
 
 
 
@@ -22,30 +19,30 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home',
+      redirect: '/recommendView',
     },
     {
-      path: '/home',
-      name: 'home',
-      component: Home,
+      path: '/recommendView',
+      name: 'recommendView',
+      component: RecommendView,
 
       children:[
         {
-          path: '/home/:id',
-          name: 'songDetails',
-          component: SongDetails
+          path: '/recommendView/:id',
+          name: 'recommendDetails',
+          component: RecommendDetails
         }
       ]
     },
     {
-      path: '/ranking',
-      name: 'ranking',
-      component: Ranking
+      path: '/rankingView',
+      name: 'rankingView',
+      component: RankingView
     },
     {
-      path: '/singer',
-      name: 'singer',
-      component: Singer,
+      path: '/singerView',
+      name: 'singerView',
+      component: SingerView,
       children:[
         {
           path: ':id',
@@ -54,9 +51,9 @@ export default new Router({
         }
       ]
     },{
-      path: '/home/:id',
-      name: 'playInterface',
-      component: PlayInterface
+      path: '/recommendView/:id',
+      name: 'playView',
+      component: PlayView
     }
   ]
 })

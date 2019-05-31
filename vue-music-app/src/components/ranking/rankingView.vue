@@ -23,7 +23,7 @@
 import axios from 'axios'
 import Bscroll from 'better-scroll'
 
-import heads from '../common/head'
+import heads from '../../common/head'
 
 
 export default {
@@ -88,11 +88,11 @@ export default {
                     height: 1.82rem;
                 }
                 img[lazy=loading]{
-                    background-image: url('../../public/img/default.png');
+                    background-image: url('../../../public/img/default.png');
                     background-size: 100%;
                 }
                 img[lazy=loaded]{
-                    background-image: url('../../public/img/default.png');
+                    background-image: url('../../../public/img/default.png');
                     background-size: 100%;
                 }
                 .musicList{

@@ -36,10 +36,11 @@
 
 
 <script>
-import utils from "../api/utils.js";
+
 import axios from "axios";
 
-import Loading from "../common/loading"
+import utils from "../../api/utils.js";
+import Loading from "../../common/loading"
 
 export default {
   data() {

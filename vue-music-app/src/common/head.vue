@@ -23,13 +23,13 @@ export default {
         return{
             action: [{
               name:'推荐',
-              site: 'home'
+              site: 'recommendView'
             },{
               name:'排行',
-              site: 'ranking'
+              site: 'rankingView'
             },{
               name:'歌手',
-              site: 'singer'
+              site: 'singerView'
             }],
         }
     },

@@ -41,7 +41,7 @@
 <script>
 // import axios from 'axios';
 
-import utils from '../api/utils'
+import utils from '../../api/utils'
 
 
 export default {
