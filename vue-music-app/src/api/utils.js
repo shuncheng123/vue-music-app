@@ -62,7 +62,6 @@ export default {
     */
 
     sendRequest(url, requestType, successCallback, param ){
-
         let resove = (response)=> {
             successCallback && successCallback(response.data);
         }

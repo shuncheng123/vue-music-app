@@ -1,7 +1,7 @@
 <template>
   <div id="page" >
     <heads actionMarks="推荐" ></heads>
-    <recommend-list :banners="banners" :recommendList="recommendList"></recommend-list>
+    <recommend-list :banners="banners" :recommendList="recommendList" @enter-song="enterSongList"></recommend-list>
     <transition name="slide">
         <router-view></router-view>
     </transition>
@@ -10,10 +10,10 @@
 
 <script>
 
-import axios from 'axios';
+import utils from '../../api/utils'
 import heads from '../../common/head'
-
 import recommendList from './recommendList'
+
 
 export default {
   name: 'home',// ???
@@ -29,26 +29,22 @@ export default {
   },
   methods: {
     init(){
-      axios.get('http://localhost:3000/banner')
-      .then((response) => {
-        this.banners = response.data.banners;
-      })
-      .catch((error) => {
-        console.log("错误:"+error);
-      })
-
-      axios.get('http://localhost:3000/personalized')
-      .then((response) => {
-        this.recommendList = response.data.result;
-      })
-      .catch((error) => {
-        console.log("错误:"+error);
-      })
+      utils.sendRequest('http://localhost:3000/banner','get',(response) => {
+          this.banners = response.banners;
+      });
+      utils.sendRequest('http://localhost:3000/personalized','get',(response) => {
+          this.recommendList = response.result;
+      });
     },
+    enterSongList(data){
+      this.$router.push({name: 'recommendDetails', params: {id: data.id,info : data}})
+    }
     
   },
   
   mounted() {
+    window.banners = 10;
+    console.log(banners);
     this.init();
   }
 }

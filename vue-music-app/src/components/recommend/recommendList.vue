@@ -12,7 +12,7 @@
         </div>
         <h3>推荐歌单</h3>
         <ul class="recommendMusic">
-          <li v-for="(item,index) in recommendList" @click="enetrSong(item)" :key="index">
+          <li v-for="(item,index) in recommendList" @click="enterSong(item)" :key="index">
             <div>
               <img v-lazy="item.picUrl" lazy="loading loaded"   alt="">
               <div class="musicCount">
@@ -73,8 +73,8 @@ export default {
             click: true,
         });
     },
-    enetrSong(data){
-      this.$router.push({name: 'recommendDetails', params: {id: data.id,info : data}})
+    enterSong(data){
+      this.$emit('enter-song',data);
     },
   },
   filters: {

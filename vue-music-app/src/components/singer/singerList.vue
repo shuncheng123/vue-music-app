@@ -6,7 +6,7 @@
         <div class="singer" ref="singerEl"  >
           <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
             <h4>{{ item.title | titleChange }}</h4>
-            <li v-for="(gingerName, i) in item.singer" @click="singerInfo(gingerName)" :key="i">
+            <li v-for="(gingerName, i) in item.singer" @click="enterSinger(gingerName)" :key="i">
               <div>
                 <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
               </div>
@@ -102,8 +102,8 @@ export default {
             }
         }
     },
-    singerInfo(singerInfo){
-        this.$router.push({name: 'singerDetails',params: {id: singerInfo.id, singerInfo}})
+    enterSinger(singerInfo){
+      this.$emit('enter-singer',singerInfo);
     }
   },
   filters: {

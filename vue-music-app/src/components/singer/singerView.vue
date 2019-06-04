@@ -1,7 +1,7 @@
 <template>
   <div id="singer">
     <heads actionMarks="歌手"></heads>
-    <singer-list :singerList="singerList" :shortcutList="shortcutList"></singer-list>
+    <singer-list :singerList="singerList" :shortcutList="shortcutList" @enter-singer="enterSingerList"></singer-list>
     <transition name="slide">
       <router-view></router-view>
     </transition>
@@ -37,25 +37,20 @@ export default {
   methods: {
     init() {
       new Promise((resolve, reject) => {
-        axios.get("http://localhost:3000/toplist/artist?limit=10") // 热门歌手
-          .then(response => {
-            let list = response.data.list.artists.slice(0, 10);
+
+        utils.sendRequest('http://localhost:3000/toplist/artist?limit=10', 'get', (response) => {
+            let list = response.list.artists.slice(0, 10);
             resolve(list);
           })
-          .catch(error => {
-            reject(error);
-          });
       }).then(value => {
-        axios.get("http://localhost:3000/top/artists?limit=100") // 歌手
-          .then(response => {
-
+        utils.sendRequest('http://localhost:3000/top/artists?limit=100', 'get', (response => {
             let singerArrs = [];// 未排序得歌手总数组
 
             let list = {};// 未排序
             let newlist = {};// 已排序
             
             // 102条数据
-            let artists = response.data.artists;
+            let artists = response.artists;
             artists = utils.unique(artists.concat(value), "id"); // 数组对象去重
 
 
@@ -92,11 +87,12 @@ export default {
             var shortcutArr = Object.keys(newlist);
             this.shortcutList = shortcutArr;
           })
-          .catch(error => {
-            console.log("错误:" + error);
-          });
+        )
       });
     },
+    enterSingerList(singerInfo){
+        this.$router.push({name: 'singerDetails',params: {id: singerInfo.id, singerInfo}})
+    }
 
   },
 

@@ -5,6 +5,7 @@ import store from './store/store'
 // import './registerServiceWorker'
 
 import VueLazyload from 'vue-lazyload'
+import FastClick from 'fastclick'
 
 Vue.config.productionTip = false// ???
 
@@ -12,6 +13,8 @@ Vue.use(VueLazyload,{
   // loading: '../public/img/default.png',
   // loaded: '../public/img/default.png'
 })
+
+FastClick.attach(document.body);
 
 // 适配Rem
 var clientWidth  = document.documentElement.clientWidth;
