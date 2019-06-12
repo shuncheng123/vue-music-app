@@ -6,10 +6,13 @@
   </div>
 </template>
 
-<style>
+
+<style lang="scss">
+
+@import "./assets/public-style.scss";
 
 body{
-  background-color: #f2f3f4;
+  background-color: $content-background;
 
 }
 html,body,h1,h2,h3,h4,h5,ul,li,button,p{
@@ -18,6 +21,8 @@ html,body,h1,h2,h3,h4,h5,ul,li,button,p{
 }
 ul{
   list-style:none;
-}  
+}
+
+
 
 </style>
