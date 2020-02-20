@@ -3,11 +3,11 @@
       <div class="title">
         <i class="iconfont icon-cebianlan"></i>
         <p>music</p>
-        <i class="iconfont icon-sousuo"></i>
+        <i @click="enterGrabble" class="iconfont icon-sousuo"></i>
       </div>
       
       <ul class="action">
-        <li v-for="(item,index) in action" @click="action_atv(index,item.site)" :key="index">
+        <li v-for="(item,index) in action"   @click="action_atv(item.site)" :key="index">
           <span  v-bind:class="{active_Span: item.name == actionMarks }">
               {{item.name}}
           </span>
@@ -40,21 +40,27 @@ export default {
       }
     },
     methods: {
-        action_atv(index,site){ 
-          this.$router.push({ name: site});
+        action_atv(site){
+          this.$emit('clickEvent', site);
         },
         update_actMrk(status){
           // this.actionMark = status;
+        },
+        enterGrabble(){
+          this.$router.push('/grabble');
         }
+
     },
     mounted(){
-      console.log("初始化："+this.actionMarks);
+      // console.log("初始化："+this.actionMarks);
     }
 }
 </script>
 
 <style lang="scss" scoped>
     .head{
+      position: relative;
+      z-index: 10;
       background: #d44538;
       color: #f1f1f1;    
       width: 7.50rem;
@@ -73,7 +79,7 @@ export default {
           font-size: .35rem;
         }
         p{
-          font-size: 0.30rem;
+          font-size: 0.40rem;
           letter-spacing: .05rem;
           font-weight: 700;
           color: #f1f1f1;

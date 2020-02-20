@@ -1,5 +1,5 @@
 <template>
-    <div class="loading">
+    <div class="loading"  :style="{height: setHeight}">
         <img src="../assets/loading.gif" alt="">
     </div>
 </template>
@@ -10,20 +10,29 @@ export default {
         return{
 
         }
+    },
+    props:{
+        setHeight: {
+            types: String,
+            default: '100%',
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped >
     .loading{
-        display: inline-block;
+        position: relative;
+        display: block;
         width: 100%;
-        text-align: center;
         font-size: 0;
        
         img{
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 0.50rem;
-            // transform: translateY(-50%);
+            transform: translate(-50%, -50%);
         }
     }
 </style>

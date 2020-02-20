@@ -1,7 +1,7 @@
 <template>
   <div id="singer">
-    <heads actionMarks="歌手"></heads>
-    <singer-list :singerList="singerList" :shortcutList="shortcutList" @enter-singer="enterSingerList"></singer-list>
+    <heads :actionMarks="page" @clickEvent="clickCbk"></heads>
+    <singer-lists v-if="singerList.length > 1" :singerList="singerList" :shortcutList="shortcutList" :hotSingerList="hotSingerList" @enter-singer="enterSingerList"></singer-lists>
     <transition name="slide">
       <router-view></router-view>
     </transition>
@@ -14,7 +14,7 @@ import utils from "../../api/utils"
 import pinyin from "js-pinyin"
 
 import heads from "../../common/head"
-import singerList from "./singerList"
+import singerLists from "./singerList"
 
 
 
@@ -22,76 +22,90 @@ import singerList from "./singerList"
 export default {
   data() {
     return {
+      page: '歌手',
+      hotSingerList: [],// 热门歌手
       singerList: [],// 歌手列表
       shortcutList: [],// 字母列表
     };
   },
-  mounted() {
-    
+  created(){
     this.init();
   },
+  
   components: {
     heads,
-    singerList
+    singerLists
   },
   methods: {
     init() {
       new Promise((resolve, reject) => {
 
-        utils.sendRequest('http://localhost:3000/toplist/artist?limit=10', 'get', (response) => {
-            let list = response.list.artists.slice(0, 10);
-            resolve(list);
+        //热门歌手
+        utils.sendRequest('http://localhost:3000/top/artists?limit=10', 'get', (response) => {
+            this.hotSingerList = response.artists;
+            resolve(this.hotSingerList);
           })
       }).then(value => {
-        utils.sendRequest('http://localhost:3000/top/artists?limit=100', 'get', (response => {
-            let singerArrs = [];// 未排序得歌手总数组
+
+        //歌手榜
+        utils.sendRequest('http://localhost:3000/toplist/artist', 'get', (response => {
 
             let list = {};// 未排序
             let newlist = {};// 已排序
             
-            // 102条数据
-            let artists = response.artists;
-            artists = utils.unique(artists.concat(value), "id"); // 数组对象去重
+            // 100条数据
+            let artists = response.list.artists;
+            artists = utils.uniques(value, artists, "id"); // 数组对象去重 
 
 
             artists.forEach(element => {
-              let pyinStr = pinyin.getFullChars(element.name).slice(0, 1);
-              if (list[pyinStr] === undefined) {
+              let pyinStr = pinyin.getFullChars(element.name).slice(0, 1).toUpperCase();
+              var Asc = pyinStr.charCodeAt();
+              if(!(Asc >= 65 && Asc <= 90)){ // 判断是否为特殊姓名
+                pyinStr = "#";
+              }
+              if (!list[pyinStr]) { 
                 list[pyinStr] = [];
               }
               list[pyinStr].push(element);
-            });
 
-
+            }); 
             //排序对象里的字母属性：
             let letter = Object.keys(list).sort((a, b) => {
               return a.charCodeAt() - b.charCodeAt();
-            });
+            }); 
+            if(letter[0] == "#"){
+              letter.shift();
+              letter.push("#");
+            }
 
-            //将热榜歌手插入在最前面
-            newlist["re"] = value;
-            //排序：根据字母顺序依次赋值给newlist
+            // 将热榜歌手插入在最前面
+            // newlist["re"] = value;
+            // 排序：根据字母顺序依次赋值给newlist
             for (let i in letter) {
               newlist[letter[i]] = list[letter[i]];
             }
 
-            //添加属性：将已排序完成的数据newlist,添加新属性
+
+            // 添加属性：将已排序完成的数据newlist,添加新属性
             for(let item in newlist){
               var obj = {};
               obj['title'] = item;
               obj['singer'] = newlist[item];
-              singerArrs.push(obj)
+              this.singerList.push(obj);
             }
-            this.singerList = singerArrs;
-            
-            var shortcutArr = Object.keys(newlist);
-            this.shortcutList = shortcutArr;
+            this.shortcutList = Object.keys(newlist);
+            this.shortcutList.unshift('热');
+
           })
         )
       });
     },
     enterSingerList(singerInfo){
         this.$router.push({name: 'singerDetails',params: {id: singerInfo.id, singerInfo}})
+    },
+    clickCbk(site){
+      this.$router.push({ name: site});
     }
 
   },

@@ -1,6 +1,6 @@
 <template>
     <div id="ranking">
-        <heads actionMarks="排行"></heads>
+        <heads :actionMarks="page" @clickEvent="clickCbk"></heads>
         <div class="wrapper" ref="wrapper">
             <ul  class="content">
                 <li  v-for="(item,index) in rankingList" :key="index">
@@ -29,8 +29,9 @@ import heads from '../../common/head'
 export default {
     data(){
         return{
+            page: '排行',
             rankingList: [],//排行歌单
-            MUSIC_TOP: [1,2,3,4,5,6,7,8,9,10]
+            MUSIC_TOP: [1,2,3,4,5,6,7,8,9,10],
         }
     },
     components:{
@@ -41,7 +42,7 @@ export default {
             let url = 'http://localhost:3000/top/list?idx='
             for(let i= 0; i< this.MUSIC_TOP.length; i++){
 
-                utils.sendRequest(url+i, 'get', (response) => {
+                utils.sendRequest(url+i,  'get', (response) => {
                     // 错误：一开始的写法初衷，请求到的数据，每次都是有序的渲染出来。
                     // this.rankingList[i] = response.data.playlist.tracks;
 
@@ -51,8 +52,14 @@ export default {
 
                     //待解决：这样用会报 rankingList数组下的属性undefined
                     // this.$set(this.rankingList,i,list)
+
+                    
+
                 })
             }
+        },
+        clickCbk(site){
+            this.$router.push({ name: site});
         }
     },
     mounted(){

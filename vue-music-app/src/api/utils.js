@@ -6,17 +6,31 @@ export default {
 
     // 对象数组去重
     unique(arr, u_key){ // 数组, 对象Key值
+        console.log(arr);
         let result = {};
         let finalResult = [];
 
         for(let i = 0; i<arr.length; i++){
-            
             if(!result[arr[i][u_key]]){
                 result[arr[i][u_key]] = arr[i];
+                // finalResult.push(arr[i]);
                 finalResult.push(arr[i]);
             }
         }
         return finalResult;
+    },
+    // 对象数组去重 
+    uniques(arr, byArr, u_key){ // 数组, 对象Key值
+
+        for(let i = 0; i<arr.length; i++){
+            for(let z = 0; z<byArr.length; z++){
+                if(arr[i][u_key] == byArr[z][u_key]){
+                    byArr.splice(z, 1);
+                    break;
+                }
+            }
+        }
+        return byArr;
     },
     
     // 节流
@@ -54,11 +68,10 @@ export default {
 
     // request
     /* 
-                        url  String    请求地址
-                requestType  String    请求类型
-            successCallback  Function  成功回调
-                    param  Object    请求对象
-    
+                    url  String    请求地址
+            requestType  String    请求类型
+        successCallback  Function  成功回调
+                  param  Object    请求对象
     */
 
     sendRequest(url, requestType, successCallback, param ){
@@ -79,6 +92,7 @@ export default {
             .catch(reject)
         }
 
-    }
+    },
+ 
     
 }

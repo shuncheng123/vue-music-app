@@ -17,7 +17,7 @@
         <div class="playAll">
             <i class="iconfont icon-bofang1"></i>
             <p>
-            播放全部<span>(共{{ songmusicList.length}}首)</span>
+              播放全部<span>(共{{ songmusicList.length}}首)</span>
             </p>
         </div>
         <ul>
@@ -54,20 +54,11 @@ export default {
   },
   methods: {
     init(songlistId) {
-      // axios
-      //   .get("http://localhost:3000/playlist/detail?id=" + songlistId)
-      //   .then(response => {
-      //     this.songmusicList = response.data.playlist.tracks;
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
 
       let url = 'http://localhost:3000/playlist/detail?id='+songlistId;
       utils.sendRequest(url, 'get', (response) => {
           this.songmusicList = response.playlist.tracks;
       });
-
 
     },
     

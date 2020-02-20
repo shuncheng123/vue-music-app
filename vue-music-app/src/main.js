@@ -14,7 +14,7 @@ Vue.use(VueLazyload,{
   // loaded: '../public/img/default.png'
 })
 
-FastClick.attach(document.body);
+// FastClick.attach(document.body);
 
 // 适配Rem
 var clientWidth  = document.documentElement.clientWidth;

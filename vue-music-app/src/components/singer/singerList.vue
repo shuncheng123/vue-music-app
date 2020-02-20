@@ -1,119 +1,111 @@
 <template>
-  <div id="singer">
-    <div class="wrapper" ref="wrapper">
+  <div id="singer" ref="singerEl" @scroll="moveSingerList">
 
       <div class="singerConten content" ref="singerContenEl" >
-        <div class="singer" ref="singerEl"  >
-          <ul v-for="(item, index) in singerList" :key="index" :data-count="index">
-            <h4>{{ item.title | titleChange }}</h4>
-            <li v-for="(gingerName, i) in item.singer" @click="enterSinger(gingerName)" :key="i">
+          <ul :data-count="0">
+            <h4>热门</h4>
+            <li v-for="(item, index) in hotSingerList"   @click="enterSinger(item)" :key="index">
               <div>
-                <img v-lazy="gingerName.img1v1Url" lazy="loading loaded" alt="" />
+                <img v-lazy="item.img1v1Url" lazy="loading loaded" alt="" />
               </div>
-              <p>{{ gingerName.name }}</p>
+              <p>{{ item.name }}</p>
             </li>
           </ul>
-        </div>
+          <ul v-for="(item, index) in singerList" :key="index" :data-count="index+1">
+            <h4>{{ item.title }}</h4>
+            <li v-for="(ginger, i) in item.singer" @click="enterSinger(ginger)" :key="i">
+              
+              <div>
+                <img v-lazy="ginger.img1v1Url" lazy="loading loaded" alt="" />
+              </div>
+              <p>{{ ginger.name }}</p>
+            </li>
+          </ul>
       </div>
-
-
       <div class="list-shortcut">
         <ul>
-          <li v-for="(item, index) in shortcutList" @click="shortcutAisle(index)"  :class="shortcutActive == index?'active':''" :key="index">{{ item | letterChange }}</li>
+          <li v-for="(item, index) in shortcutList" @click="shortcutAisle(index)"  :class="shortcutActive == index?'active':''" :key="index">{{ item }}</li>
         </ul>
       </div>
     </div>
-
-  </div>
 </template>
 
 <script>
 import Bscroll from 'better-scroll'
+import utils from "../../api/utils"
+
 
 export default {
   data() {
     return {
       shortcutActive: 0,
+      timeoutKey: null,
+      listTopArr: [], //歌手列表ul距离顶部距离的集合
     };
   },
   props:{
       singerList:{
           types: Array,
-          default: [],
+          default: ()=>{
+             return []
+          },
       },
       shortcutList:{
           types: Array,
-          default: [],
+          default: ()=>{
+             return []
+          },
       },
+      hotSingerList:{
+          types: Array,
+          default: ()=>{
+             return []
+          },
+      },
+      
   },
   mounted() {
-    
     this.init();
-
-    // 错误：singerEl[0] == undefined 下文可以获取
-    // var singerEl = this.$refs.singerEl.children;
-    // var liElHeight = singerEl[0].lastElementChild.offsetHeight;
-    // this.$refs.singerContenEl.addEventListener('scroll',utils.throttle(this.moveSingerList,200));
-
-    
-    
   },
   methods: {
     init() {
-        this.$nextTick(() =>{
-            this.getHeight();
-        })
+      // 初始化Ul元素距离顶部的距离
+      var listEl =  this.$refs.singerContenEl.childNodes;
+      for (let index = 0; index < listEl.length; index++) {
+        this.listTopArr.push(listEl[index].offsetTop-80);
+      }
     },
-    getHeight(){
-      this.list = new Bscroll(this.$refs.wrapper,{
-        click: true,
-      });
-        
-      this.list.on('scroll', (pos) => {
-        console.log(1)
-      })
-    },
+
     // 右侧“快捷导航”点击事件
     shortcutAisle(index){
-
-      var singerContenEl = this.$refs.singerContenEl;
-      var singerEl = this.$refs.singerEl.children;
-      var ulElTop = singerEl[index].offsetTop;
-
-      singerContenEl.scrollTo(0, ulElTop);
-      console.log(this.$refs.singerContenEl.scrollTop);
+      console.log('点击字母'+index);
+      this.shortcutActive = index;
+      // 2.获取对应下标的Dom元素距离顶部的距离(-80后理解为滚动条距离顶部的距离)
+      var offsetHeight = this.listTopArr[index];
+      // 3.使整个歌手列表集合向上挪移 offsetHeight 高度
+      this.$refs.singerEl.scrollTop = offsetHeight;
+      // 优化：每次点击都获取元素,较影响效率
       // 修改：这里存在一个很大的问题,点击字母，滚动条定位到对应位置，同时会触发滚动条事件。随之进入一次没有必要的循环
     },
     
     // 触发Div滚动事件，
     moveSingerList(){
-                console.log(123);
-
-        var singerEl = this.$refs.singerEl.children;
-        var liElHeight = singerEl[0].lastElementChild.offsetHeight;
-        var headEl = this.$refs.singerContenEl.offsetTop + liElHeight;// 头部高度
-        for(let i = 0; i< singerEl.length; i++){
-            // if(singerEl[i].getBoundingClientRect().top < headEl && singerEl[i+1].getBoundingClientRect().top > headEl){
-            // }
-            if(this.$refs.singerContenEl.scrollTop + liElHeight < singerEl[i].offsetTop + singerEl[i].offsetHeight){
-                var count = singerEl[i].dataset.count;
-                this.shortcutActive = count;
-                return ;
-            }
+      this.timeoutKey && clearTimeout(this.timeoutKey);
+      this.timeoutKey = setTimeout(function(){
+        for (let index = 0; index < this.listTopArr.length; index++) {
+          if(this.$refs.singerEl.scrollTop < this.listTopArr[index]){
+              this.shortcutActive = index-1;
+              break;
+          }
         }
+      }.bind(this),100);
     },
+
     enterSinger(singerInfo){
       this.$emit('enter-singer',singerInfo);
     }
   },
-  filters: {
-      titleChange(value){
-        return value == 're'? '热门': value;
-      },
-      letterChange(value){
-        return value == 're'? '热': value;
-      }
-  }
+  
 };
 </script>
 
@@ -128,15 +120,22 @@ export default {
   }
 
 
-  .wrapper{
-    overflow: hidden;
+  // .wrapper{
+  //   overflow: hidden;
+  //   height: calc(13.34rem - 1.6rem);
+  // }
+  #singer{
+    overflow: scroll;
     height: calc(13.34rem - 1.6rem);
+    font-size: 0.2rem;
+
   }
   .singerConten {
     
 
-    .singer {
-        font-size: 0.2rem;
+    // .singer {
+        // font-size: 0.2rem;
+
 
       ul {
         padding-left: 0.1rem;
@@ -178,7 +177,7 @@ export default {
         }
       }
     }
-  }
+  // }
 
   .list-shortcut {
         position: fixed;

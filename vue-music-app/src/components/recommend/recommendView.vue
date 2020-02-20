@@ -1,6 +1,6 @@
 <template>
   <div id="page" >
-    <heads actionMarks="推荐" ></heads>
+    <heads :actionMarks="page" @clickEvent="clickCbk" ></heads>
     <recommend-list :banners="banners" :recommendList="recommendList" @enter-song="enterSongList"></recommend-list>
     <transition name="slide">
         <router-view></router-view>
@@ -19,6 +19,7 @@ export default {
   name: 'home',// ???
   data(){
     return{
+      page: '推荐',
       banners: [], //轮播图
       recommendList: [], //推荐歌单
     }
@@ -38,13 +39,15 @@ export default {
     },
     enterSongList(data){
       this.$router.push({name: 'recommendDetails', params: {id: data.id,info : data}})
+    },
+    clickCbk(site){
+      this.$router.push({ name: site});
     }
     
   },
   
   mounted() {
-    window.banners = 10;
-    console.log(banners);
+    
     this.init();
   }
 }

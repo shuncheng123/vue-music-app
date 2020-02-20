@@ -110,7 +110,6 @@ export default {
     .recommend{
       position: fixed;
       top: 1.6rem;
-      z-index: -10;
       height: calc(13.34rem - 1.60rem);
       width: 100%;
 

@@ -27,9 +27,7 @@
             </div>
             </li>
         </ul>
-        <div v-show="!musicList.length" class="loadingBox">
-            <Loading></Loading>
-        </div>
+        <Loading v-show="!musicList.length" setHeight="7.3rem"></Loading>
     </div>
   </div> 
 </template>
@@ -82,7 +80,7 @@ export default {
   },
     //此方法在嵌套路由进行多次来回跳转时,会多次执行
   mounted() {
-    this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
+    // this.$refs.songListEl.addEventListener('scroll',utils.throttle(this.scroll_Action,200))
     this.init(this.$route.params.id);
   },
 
@@ -224,10 +222,6 @@ export default {
                 }
             }
           }
-      }
-      .loadingBox{
-        height: 7.64rem;
-        line-height: 7.64rem;
       }
       
       }

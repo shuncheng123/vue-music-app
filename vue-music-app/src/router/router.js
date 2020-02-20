@@ -9,6 +9,9 @@ import RecommendDetails from '../components/recommend/recommendDetails.vue'
 import SingerDetails from '../components/singer/singerDetails.vue'
 import PlayView from '../components/play/playView.vue'
 
+import Grabble from '../components/grabble/grabble.vue'
+
+
 
 
 Vue.use(Router)
@@ -54,6 +57,10 @@ export default new Router({
       path: '/recommendView/:id',
       name: 'playView',
       component: PlayView
+    },{
+      path: '/grabble',
+      name: 'grabble',
+      component: Grabble
     }
   ]
 })
